@@ -14,7 +14,6 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.use((err, request, response, next) => {
-  console.log("Inside err catch of app");
   if (err.status && err.message) {
     response.status(400).send(err);
   } else {

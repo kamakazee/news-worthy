@@ -24,7 +24,6 @@ const getArticleById = (request, response, next) => {
       response.status(200).send({ article });
     })
     .catch((err) => {
-      console.log(err, "Inside err catch of controller");
       next(err);
     });
 };

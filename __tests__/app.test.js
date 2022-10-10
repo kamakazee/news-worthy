@@ -97,7 +97,6 @@ describe("200: GET api/articles/:article_id", () => {
         .get("/api/articles/13")
         .expect(400)
         .then(({ body }) => {
-          console.log(body, "Inside of test");
           expect(body).toEqual({
             status: 400,
             message: "article id doesn't exist",
