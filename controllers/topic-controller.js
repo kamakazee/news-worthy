@@ -1,9 +1,10 @@
 const {
   selectTopics,
   selectArticles,
-  selectArticleById, selectUsers
+  selectArticleById,
+  selectUsers,
+  setArticleById,
 } = require("../models/topic-model.js");
-
 
 const getTopics = (request, response) => {
   selectTopics().then(({ rows: topics }) => {
@@ -35,5 +36,20 @@ const getUsers = (request, response) => {
   });
 };
 
-module.exports = { getTopics, getUsers, getUsers ,getArticles, getArticleById };
+const updateArticleById = (request, response) => {
+  const {article_id}= request.params;
+  const {inc_votes} = request.body;
+  
+  setArticleById(inc_votes, article_id).then((article)=>{
+    response.status(200).send({article})
+  });
+};
 
+module.exports = {
+  getTopics,
+  getUsers,
+  getUsers,
+  getArticles,
+  getArticleById,
+  updateArticleById,
+};

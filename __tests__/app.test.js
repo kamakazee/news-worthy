@@ -52,32 +52,25 @@ describe("200: GET api/articles/:article_id", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-
         const articlesArray = body.articles;
 
         expect(articlesArray).toHaveLength(12);
 
-        articlesArray.forEach((article)=>{
+        articlesArray.forEach((article) => {
           expect(article).toEqual(
-            expect.objectContaining(
-              {
-                title: expect.any(String),
-                topic: expect.any(String),
-                author: expect.any(String),
-                body: expect.any(String),
-                created_at: expect.any(String),
-                votes: expect.any(Number),
-                article_id: expect.any(Number)
-              }
-            )
-          )
-        })    
-          
-      }
-      )
-    }
-  )
-
+            expect.objectContaining({
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_id: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
 
   test("200: respond with article as requested by article id", () => {
     return request(app)
@@ -125,10 +118,7 @@ describe("200: GET api/articles/:article_id", () => {
         });
     });
   });
-
-
 });
-
 
 describe("GET /api/users", () => {
   test("200, respond with array of objects with property of username, name and avatar_url", () => {
@@ -137,7 +127,7 @@ describe("GET /api/users", () => {
       .expect(200)
       .then(({ body }) => {
         const usersArray = body.users;
-        
+
         expect(usersArray).toHaveLength(4);
 
         usersArray.forEach((user) => {
@@ -150,4 +140,27 @@ describe("GET /api/users", () => {
           );
         });
       });
-  })})
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("201: returns object of article with updated votes", () => {
+    return request(app)
+      .patch(`/api/articles/1`)
+      .send({ inc_votes: 50 })
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 50,
+        });
+      });
+  });
+});
