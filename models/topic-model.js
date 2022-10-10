@@ -4,4 +4,10 @@ const selectTopics = () => {
   return db.query(`SELECT * FROM topics`);
 };
 
-module.exports = { selectTopics };
+const selectUsers = () => {
+  return db.query(`SELECT * FROM users`).then(({ rows: users }) => {
+    return users;
+  });
+};
+
+module.exports = { selectTopics, selectUsers };
