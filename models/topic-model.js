@@ -6,8 +6,7 @@ const selectTopics = () => {
 
 const selectUsers = () => {
   return db.query(`SELECT * FROM users`).then(({ rows: users }) => {
-    
-    return users
+    return users;
   });
 };
 

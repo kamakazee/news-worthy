@@ -53,9 +53,7 @@ describe("GET /api/users", () => {
       .expect(200)
       .then(({ body }) => {
         const usersArray = body.users;
-
-        console.log(usersArray, "Inside of tests for user");
-
+        
         expect(usersArray).toHaveLength(4);
 
         usersArray.forEach((user) => {

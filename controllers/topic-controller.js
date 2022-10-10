@@ -12,4 +12,4 @@ const getUsers = (request, response) => {
   });
 };
 
-module.exports = { getTopics, getUsers };
+module.exports = { getTopics, getUsers, getUsers };

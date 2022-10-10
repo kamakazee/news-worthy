@@ -8,7 +8,6 @@ app.get("/api/topics", getTopics);
 app.get("/api/users", getUsers);
 
 app.use((request, response, next) => {
-
   response.status(404).send({ status: 404, message: "endpoint doesn't exist" });
   next(err);
 });
