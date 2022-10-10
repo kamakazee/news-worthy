@@ -6,6 +6,7 @@ const db = require("../db/connection.js");
 
 afterAll(() => {
   db.end();
+  
 });
 
 beforeEach(() => {
@@ -32,15 +33,17 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  describe("404: end point not found", () => {
-    test("404: respond with message of endpoint doesn't exist", () => {
-      return request(app)
-        .get("/api/doesnt-exist")
-        .expect(404)
-        .then(({ body }) => {
-          expect(body).toHaveProperty("message");
-          expect(body.message).toBe("endpoint doesn't exist");
-        });
-    });
+  
+});
+
+describe("404: end point not found", () => {
+  test("404: respond with message of endpoint doesn't exist", () => {
+    return request(app)
+      .get("/api/doesnt-exist")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body).toHaveProperty("message");
+        expect(body.message).toBe("endpoint doesn't exist");
+      });
   });
 });
