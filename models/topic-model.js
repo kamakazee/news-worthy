@@ -4,4 +4,8 @@ const selectTopics = () => {
   return db.query(`SELECT * FROM topics`);
 };
 
-module.exports = { selectTopics };
+const selectArticles = () => {
+  return db.query(`SELECT * FROM articles`);
+};
+
+module.exports = { selectTopics, selectArticles };

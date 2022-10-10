@@ -6,7 +6,6 @@ const db = require("../db/connection.js");
 
 afterAll(() => {
   db.end();
-  
 });
 
 beforeEach(() => {
@@ -33,7 +32,6 @@ describe("GET /api/topics", () => {
         });
       });
   });
-  
 });
 
 describe("404: end point not found", () => {
@@ -44,6 +42,33 @@ describe("404: end point not found", () => {
       .then(({ body }) => {
         expect(body).toHaveProperty("message");
         expect(body.message).toBe("endpoint doesn't exist");
+      });
+  });
+});
+
+describe("200: GET api/articles/:article_id", () => {
+  test("200: respond with all articles for endpoint of api/articles", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesArray = body.articles;
+
+        expect(articlesArray).toHaveLength(12);
+
+        articlesArray.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_id: expect.any(Number),
+            })
+          );
+        });
       });
   });
 });
