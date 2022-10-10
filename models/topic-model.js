@@ -16,7 +16,7 @@ const selectArticleById = (article_id) => {
         return article[0];
       } else {
         return Promise.reject({
-          status: 400,
+          status: 404,
           message: "article id doesn't exist",
         });
       }

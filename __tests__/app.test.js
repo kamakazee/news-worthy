@@ -91,15 +91,29 @@ describe("200: GET api/articles/:article_id", () => {
       });
   });
 
-  describe("400: article id id doesn't exist", () => {
-    test("400: article id doesn't exist", () => {
+  describe("404: article id id doesn't exist", () => {
+    test("404: article id doesn't exist", () => {
       return request(app)
         .get("/api/articles/13")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: article id is a string instead of a number", () => {
+    test("400: Respond with error message that article id passed is not correct type", () => {
+      return request(app)
+        .get("/api/articles/string")
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({
             status: 400,
-            message: "article id doesn't exist",
+            message: "article id must be a number",
           });
         });
     });
