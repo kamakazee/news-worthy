@@ -23,4 +23,10 @@ const selectArticleById = (article_id) => {
     });
 };
 
-module.exports = { selectTopics, selectArticles, selectArticleById };
+const selectUsers = () => {
+  return db.query(`SELECT * FROM users`).then(({ rows: users }) => {
+    return users;
+  });
+};
+
+module.exports = { selectTopics, selectUsers, selectArticles, selectArticleById };

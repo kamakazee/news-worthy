@@ -52,25 +52,32 @@ describe("200: GET api/articles/:article_id", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
+
         const articlesArray = body.articles;
 
         expect(articlesArray).toHaveLength(12);
 
-        articlesArray.forEach((article) => {
+        articlesArray.forEach((article)=>{
           expect(article).toEqual(
-            expect.objectContaining({
-              title: expect.any(String),
-              topic: expect.any(String),
-              author: expect.any(String),
-              body: expect.any(String),
-              created_at: expect.any(String),
-              votes: expect.any(Number),
-              article_id: expect.any(Number),
-            })
-          );
-        });
-      });
-  });
+            expect.objectContaining(
+              {
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_id: expect.any(Number)
+              }
+            )
+          )
+        })    
+          
+      }
+      )
+    }
+  )
+
 
   test("200: respond with article as requested by article id", () => {
     return request(app)
@@ -118,4 +125,29 @@ describe("200: GET api/articles/:article_id", () => {
         });
     });
   });
+
+
 });
+
+
+describe("GET /api/users", () => {
+  test("200, respond with array of objects with property of username, name and avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const usersArray = body.users;
+        
+        expect(usersArray).toHaveLength(4);
+
+        usersArray.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  })})
