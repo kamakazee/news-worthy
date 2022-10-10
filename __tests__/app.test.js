@@ -90,4 +90,19 @@ describe("200: GET api/articles/:article_id", () => {
         });
       });
   });
+
+  describe("400: article id id doesn't exist", () => {
+    test("400: article id doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/13")
+        .expect(400)
+        .then(({ body }) => {
+          console.log(body, "Inside of test");
+          expect(body).toEqual({
+            status: 400,
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
 });

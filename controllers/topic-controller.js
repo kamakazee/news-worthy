@@ -16,12 +16,17 @@ const getArticles = (request, response) => {
   });
 };
 
-const getArticleById = (request, response) => {
+const getArticleById = (request, response, next) => {
   const { article_id } = request.params;
 
-  selectArticleById(article_id).then((article) => {
-    response.status(200).send({ article });
-  });
+  selectArticleById(article_id)
+    .then((article) => {
+      response.status(200).send({ article });
+    })
+    .catch((err) => {
+      console.log(err, "Inside err catch of controller");
+      next(err);
+    });
 };
 
 module.exports = { getTopics, getArticles, getArticleById };
