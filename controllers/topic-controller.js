@@ -36,13 +36,18 @@ const getUsers = (request, response) => {
   });
 };
 
-const updateArticleById = (request, response) => {
-  const {article_id}= request.params;
-  const {inc_votes} = request.body;
-  
-  setArticleById(inc_votes, article_id).then((article)=>{
-    response.status(200).send({article})
-  });
+const updateArticleById = (request, response, next) => {
+
+  const { article_id } = request.params;
+  const { inc_votes } = request.body;
+
+  setArticleById(inc_votes, article_id)
+    .then((article) => {
+      response.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports = {

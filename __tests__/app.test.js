@@ -163,4 +163,48 @@ describe("PATCH /api/articles/:article_id", () => {
         });
       });
   });
+
+  describe("404: article id doesn't exist", () => {
+    test("404: article id doesn't exist", () => {
+      return request(app)
+        .patch("/api/articles/13")
+        .send({ inc_votes: 50 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: article id is a string instead of a number", () => {
+    test("400: Respond with error message that article id passed is not correct type", () => {
+      return request(app)
+        .patch("/api/articles/string")
+        .send({ inc_votes: 50 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "article id must be a number",
+          });
+        });
+    });
+  });
+  describe("400: body has incorrect key or value is not a number", () => {
+    test("400: Respond with error message that body must contain key/value pair of inc_votes:newVote", () => {
+      return request(app)
+        .patch("/api/articles/string")
+        .send({ inc: 50 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Body must include key/value pair of of inc_votes:newVote",
+          });
+        });
+    });
+  });
 });
