@@ -11,14 +11,16 @@ These can be accessed via the setting of the PGDATABASE variable to one of these
 
 To enable the automatic access and seeding of the relevant database, please set up two files with the following file names and value to the variable PGDATABASE:
 
-1. .env.development
+1.  .env.development
 
 ```
    PGDATABASE=nc_news
 ```
 
-2. .env.test
+2.  .env.test
 
 ```
    PGDATABASE=nc_news_test
 ```
+
+Please add these files to a .gitignore file so they don't get pushed into your git repository
