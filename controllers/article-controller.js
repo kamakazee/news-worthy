@@ -13,10 +13,9 @@ const getArticles = (request, response) => {
 
 const getArticleById = (request, response, next) => {
 
-  const {query} = request.query
   const { article_id } = request.params;
 
-  selectArticleById(article_id, query)
+  selectArticleById(article_id)
     .then((article) => {
       response.status(200).send({ article });
     })
