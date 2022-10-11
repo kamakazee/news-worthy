@@ -106,14 +106,14 @@ describe("GET api/articles/:article_id", () => {
   });
 
   describe("400: article id is a string instead of a number", () => {
-    test("400: Respond with error message that article id passed is not correct type", () => {
+    test("400: Respond with error message that is a bad request", () => {
       return request(app)
         .get("/api/articles/string")
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({
             status: 400,
-            message: "article id must be a number",
+            message: "Bad Request",
           });
         });
     });
@@ -188,7 +188,7 @@ describe("PATCH /api/articles/:article_id", () => {
         .then(({ body }) => {
           expect(body).toEqual({
             status: 400,
-            message: "article id must be a number",
+            message: "Bad Request",
           });
         });
     });
@@ -217,7 +217,7 @@ describe("PATCH /api/articles/:article_id", () => {
         .then(({ body }) => {
           expect(body).toEqual({
             status: 400,
-            message: "Votes must be an integer",
+            message: "Bad Request",
           });
         });
     });

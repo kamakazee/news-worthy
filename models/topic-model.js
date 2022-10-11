@@ -45,23 +45,16 @@ const setArticleById = (inc_votes, article_id) => {
       inc_votes,
       article_id,
     ]).then(({ rows: article }) => {
-          console.log(article.length, "article length inside model");
+          
           if (article.length > 0) {
             return article[0];
           } else {
-            console.log("Id doesn't exist, create a promise rejection");
+            
             return Promise.reject({
               status: 404,
               message: "article id doesn't exist",
             });
           }
-        }).catch((err)=>{
-          if (err.code === "22P02") {
-                  return Promise.reject({
-                    status: 400,
-                    message: "Votes must be an integer",
-                  });
-                }
         })
   })
 };
