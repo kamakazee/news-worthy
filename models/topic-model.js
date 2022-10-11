@@ -30,28 +30,40 @@ const selectUsers = () => {
 };
 
 const setArticleById = (inc_votes, article_id) => {
-  if (!inc_votes || typeof parseInt(article_id) != "number") {
+
+  if (!inc_votes) {
     return Promise.reject({
       status: 400,
-      message: "Body must include key/value pair of of inc_votes:newVote",
+      message: "Body must include a key of inc_votes",
     });
   }
 
-  return db
+  return selectArticleById(article_id).then(()=>{
+
+    return db
     .query(`UPDATE articles SET votes=$1 WHERE article_id=$2 RETURNING *;`, [
       inc_votes,
       article_id,
-    ])
-    .then(({ rows: article }) => {
-      if (article.length > 0) {
-        return article[0];
-      } else {
-        return Promise.reject({
-          status: 404,
-          message: "article id doesn't exist",
-        });
-      }
-    });
+    ]).then(({ rows: article }) => {
+          console.log(article.length, "article length inside model");
+          if (article.length > 0) {
+            return article[0];
+          } else {
+            console.log("Id doesn't exist, create a promise rejection");
+            return Promise.reject({
+              status: 404,
+              message: "article id doesn't exist",
+            });
+          }
+        }).catch((err)=>{
+          if (err.code === "22P02") {
+                  return Promise.reject({
+                    status: 400,
+                    message: "Votes must be an integer",
+                  });
+                }
+        })
+  })
 };
 
 module.exports = {
@@ -59,6 +71,5 @@ module.exports = {
   selectUsers,
   selectArticles,
   selectArticleById,
-  setArticleById,
   setArticleById,
 };

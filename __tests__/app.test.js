@@ -193,16 +193,31 @@ describe("PATCH /api/articles/:article_id", () => {
         });
     });
   });
-  describe("400: body has incorrect key or value is not a number", () => {
-    test("400: Respond with error message that body must contain key/value pair of inc_votes:newVote", () => {
+  describe("400: body has incorrect key", () => {
+    test("400: Respond with error message that key is incorrect", () => {
       return request(app)
-        .patch("/api/articles/string")
+        .patch("/api/articles/1")
         .send({ inc: 50 })
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({
             status: 400,
-            message: "Body must include key/value pair of of inc_votes:newVote",
+            message: "Body must include a key of inc_votes",
+          });
+        });
+    });
+  });
+
+  describe("400: body has invalid value type for votes", () => {
+    test("400: Respond with error message that votes must be an integer", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "string" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Votes must be an integer",
           });
         });
     });
