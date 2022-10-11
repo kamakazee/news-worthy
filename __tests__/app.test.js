@@ -120,6 +120,42 @@ describe("GET api/articles/:article_id", () => {
   });
 });
 
+describe("GET api/articles/:article_id?query=comment_count", () => {
+  test("200: for query of comment_count, responds with article and additional column with total number of comments", () => {
+    return request(app)
+      .get(`/api/articles/1?query=comment_count`)
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 1,
+          comment_count: "11",
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+        });
+      });
+  });
+
+  describe("400: query is not on allowed list", () => {
+    test("400: responds with message of bad request", () => {
+      return request(app)
+        .get(`/api/articles/1?query=comment`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+});
+
 describe("GET /api/users", () => {
   test("200, respond with array of objects with property of username, name and avatar_url", () => {
     return request(app)

@@ -1,10 +1,12 @@
 const express = require("express");
 
+const { getTopics, getUsers } = require("./controllers/topic-controller");
+
 const {
-  getTopics,
   getArticles,
-  getArticleById, getUsers, updateArticleById
-} = require("./controllers/topic-controller");
+  getArticleById,
+  updateArticleById,
+} = require("./controllers/article-controller.js");
 
 const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
 
