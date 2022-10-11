@@ -1,12 +1,16 @@
 const express = require("express");
-const app = express();
-const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
-app.use(express.json());
+
 const {
   getTopics,
   getArticles,
   getArticleById, getUsers, updateArticleById
 } = require("./controllers/topic-controller");
+
+const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
+
+const app = express();
+
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 

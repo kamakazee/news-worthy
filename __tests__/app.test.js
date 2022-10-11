@@ -46,7 +46,7 @@ describe("404: end point not found", () => {
   });
 });
 
-describe("200: GET api/articles/:article_id", () => {
+describe("GET api/articles/:article_id", () => {
   test("200: respond with all articles for endpoint of api/articles", () => {
     return request(app)
       .get("/api/articles")
@@ -144,7 +144,7 @@ describe("GET /api/users", () => {
 });
 
 describe("PATCH /api/articles/:article_id", () => {
-  test("201: returns object of article with updated votes", () => {
+  test("200: returns object of article with updated votes", () => {
     return request(app)
       .patch(`/api/articles/1`)
       .send({ inc_votes: 50 })
