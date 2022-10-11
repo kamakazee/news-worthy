@@ -46,6 +46,73 @@ describe("404: end point not found", () => {
   });
 });
 
+describe("GET api/articles", () => {
+  test("200: respond with array of articles and additional column of comment_count", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesArray = body.articles;
+
+        expect(articlesArray).toHaveLength(12);
+
+        articlesArray.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_id: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("200: respond with array of articles filtered by query of topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesArray = body.articles;
+
+        expect(articlesArray).toHaveLength(11);
+
+        articlesArray.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              topic: "mitch",
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_id: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  describe("400: topic doesn't exist", () => {
+    test("400: return message to indicate no data available for topic", () => {
+      return request(app)
+        .get("/api/articles?topic=random")
+        .expect(404)
+        .then(({ body }) => {
+          console.log(body," body inside test")
+          expect(body).toEqual({
+            status: 404,
+            message: "No articles with selected topic",
+          });
+        });
+    });
+  });
+});
+
 describe("GET api/articles/:article_id", () => {
   test("200: respond with all articles for endpoint of api/articles", () => {
     return request(app)

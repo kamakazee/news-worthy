@@ -1,9 +1,34 @@
 const db = require("../db/connection.js");
 
-const selectArticles = () => {
-  return db.query(`SELECT * FROM articles`).then(({ rows: articles }) => {
-    return articles;
-  });
+const selectArticles = (topic) => {
+  let stringQuery = `SELECT articles.*, COUNT(articles.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
+
+  if (topic) {
+    stringQuery += ` WHERE articles.topic=$1`;
+  }
+
+  stringQuery += ` GROUP BY articles.article_id`;
+
+  if (topic) {
+    return db.query(stringQuery, [topic]).then(({ rows: articles }) => {
+      
+      if(articles.length>0){
+
+        return articles;
+      }else{
+        console.log("No articles, send rejected promise")
+        return Promise.reject({
+          status: 404,
+          message: "No articles with selected topic",
+        });
+      }
+      
+    });
+  } else {
+    return db.query(stringQuery).then(({ rows: articles }) => {
+      return articles;
+    });
+  }
 };
 
 const selectArticleById = (article_id) => {
@@ -25,7 +50,6 @@ const selectArticleById = (article_id) => {
 };
 
 const setArticleById = (inc_votes, article_id, queryKeys) => {
-  
   if (!inc_votes && queryKeys.length > 0) {
     return Promise.reject({
       status: 400,
@@ -35,11 +59,9 @@ const setArticleById = (inc_votes, article_id, queryKeys) => {
 
   return selectArticleById(article_id).then(() => {
     if (queryKeys.length === 0) {
-      console.log("Inside of model, empty keys")
+      console.log("Inside of model, empty keys");
       return db
-        .query(`SELECT * from articles WHERE article_id=$1;`, [
-          article_id,
-        ])
+        .query(`SELECT * from articles WHERE article_id=$1;`, [article_id])
         .then(({ rows: article }) => {
           if (article.length > 0) {
             return article[0];
@@ -50,22 +72,22 @@ const setArticleById = (inc_votes, article_id, queryKeys) => {
             });
           }
         });
-    }else{
+    } else {
       return db
-      .query(`UPDATE articles SET votes=$1 WHERE article_id=$2 RETURNING *;`, [
-        inc_votes,
-        article_id,
-      ])
-      .then(({ rows: article }) => {
-        if (article.length > 0) {
-          return article[0];
-        } else {
-          return Promise.reject({
-            status: 404,
-            message: "article id doesn't exist",
-          });
-        }
-      });
+        .query(
+          `UPDATE articles SET votes=$1 WHERE article_id=$2 RETURNING *;`,
+          [inc_votes, article_id]
+        )
+        .then(({ rows: article }) => {
+          if (article.length > 0) {
+            return article[0];
+          } else {
+            return Promise.reject({
+              status: 404,
+              message: "article id doesn't exist",
+            });
+          }
+        });
     }
   });
 };
