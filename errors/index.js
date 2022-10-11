@@ -1,8 +1,6 @@
 const handlePsqlErrors = (err, request, response, next) => {
   if (err.code === "22P02") {
-    response
-      .status(400)
-      .send({ status: 400, message: "article id must be a number" });
+    response.status(400).send({ status: 400, message: "Bad Request" });
   } else {
     next(err);
   }
