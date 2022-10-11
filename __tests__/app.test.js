@@ -87,6 +87,7 @@ describe("GET api/articles/:article_id", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
+          comment_count: `11`,
         });
       });
   });
@@ -164,6 +165,26 @@ describe("PATCH /api/articles/:article_id", () => {
       });
   });
 
+  test("200: for an empty body, returns object of article unchanged", () => {
+    return request(app)
+      .patch(`/api/articles/1`)
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+        });
+      });
+  });
+
   describe("404: article id doesn't exist", () => {
     test("404: article id doesn't exist", () => {
       return request(app)
@@ -202,7 +223,7 @@ describe("PATCH /api/articles/:article_id", () => {
         .then(({ body }) => {
           expect(body).toEqual({
             status: 400,
-            message: "Body must include a key of inc_votes",
+            message: "Bad Request, body should include a key of inc_votes",
           });
         });
     });
