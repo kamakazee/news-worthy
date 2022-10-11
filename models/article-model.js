@@ -35,7 +35,7 @@ const setArticleById = (inc_votes, article_id, queryKeys) => {
 
   return selectArticleById(article_id).then(() => {
     if (queryKeys.length === 0) {
-      console.log("Inside of model, empty keys")
+      
       return db
         .query(`SELECT * from articles WHERE article_id=$1;`, [
           article_id,
