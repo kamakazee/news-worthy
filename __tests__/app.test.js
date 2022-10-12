@@ -157,7 +157,6 @@ describe("GET api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         const articlesArray = body.articles;
-
         expect(articlesArray).toHaveLength(12);
 
         articlesArray.forEach((article) => {
@@ -192,6 +191,26 @@ describe("GET api/articles/:article_id", () => {
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
           comment_count: `11`,
+        });
+      });
+  });
+
+  test("200: respond with article as requested by article id", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 0,
+          comment_count: "2",
         });
       });
   });
@@ -367,6 +386,74 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: return array of comments with given article_id, sorted by earliest date first", () => {
+    return request(app)
+      .get("/api/articles/1/comment")
+      .expect(200)
+      .then(({ body }) => {
+        const commentsArray = body.comments;
+
+        expect(commentsArray).toHaveLength(11);
+
+        expect(commentsArray).toBeSortedBy("created_at", { descending: true });
+
+        commentsArray.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              article_id: expect.any(Number),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("200: return empty array for no comments for valid article id", () => {
+    return request(app)
+      .get("/api/articles/2/comment")
+      .expect(200)
+      .then(({ body }) => {
+        const commentsArray = body.comments;
+        expect(commentsArray).toEqual([]);
+      });
+  });
+
+  describe("404: article id doesn't exist", () => {
+    test("404: article id doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/13/comment")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: article id is a string instead of a number", () => {
+    test("400: Respond with error message that article id passed is not correct type", () => {
+      return request(app)
+        .get("/api/articles/string/comment")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+});
+
+
 describe("POST api/articles/:article_id/comments", () => {
   test.skip("200: returns object of article with updated votes", () => {
     return request(app)
@@ -387,5 +474,5 @@ describe("POST api/articles/:article_id/comments", () => {
           votes: 0,
         });
       });
-  });
-});
+  })
+})

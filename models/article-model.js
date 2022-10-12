@@ -26,10 +26,11 @@ const selectArticles = (topic) => {
 const selectArticleById = (article_id) => {
   return db
     .query(
-      `SELECT articles.*, COUNT(articles.article_id) AS comment_count FROM articles JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id=$1 GROUP BY articles.article_id`,
+      `SELECT articles.*, COUNT(articles.article_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.article_id=$1 GROUP BY articles.article_id`,
       [article_id]
     )
     .then(({ rows: articles }) => {
+
       if (articles.length > 0) {
         return articles[0];
       } else {
