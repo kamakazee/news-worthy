@@ -53,7 +53,6 @@ describe("GET api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         const articlesArray = body.articles;
-
         expect(articlesArray).toHaveLength(12);
 
         articlesArray.forEach((article) => {
@@ -88,6 +87,26 @@ describe("GET api/articles/:article_id", () => {
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
           comment_count: `11`,
+        });
+      });
+  });
+
+  test("200: respond with article as requested by article id", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 0,
+          comment_count: "2",
         });
       });
   });
@@ -269,6 +288,16 @@ describe("GET /api/articles/:article_id/comments", () => {
             })
           );
         });
+      });
+  });
+
+  test("200: return empty array for no comments for valid article id", () => {
+    return request(app)
+      .get("/api/articles/2/comment")
+      .expect(200)
+      .then(({ body }) => {
+        const commentsArray = body.comments;
+        expect(commentsArray).toEqual([]);
       });
   });
 
