@@ -1,9 +1,26 @@
 const db = require("../db/connection.js");
+const { selectTopicDescByTopic } = require("./topic-model.js");
 
-const selectArticles = () => {
-  return db.query(`SELECT * FROM articles`).then(({ rows: articles }) => {
-    return articles;
-  });
+const selectArticles = (topic) => {
+  let stringQuery = `SELECT articles.*, COUNT(articles.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
+
+  if (topic) {
+    stringQuery += ` WHERE articles.topic=$1`;
+  }
+
+  stringQuery += ` GROUP BY articles.article_id`;
+
+  if (topic) {
+    return selectTopicDescByTopic(topic).then(() => {
+      return db.query(stringQuery, [topic]).then(({ rows: articles }) => {
+        return articles;
+      });
+    });
+  } else {
+    return db.query(stringQuery).then(({ rows: articles }) => {
+      return articles;
+    });
+  }
 };
 
 const selectArticleById = (article_id) => {

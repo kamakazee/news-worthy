@@ -34,6 +34,34 @@ describe("GET /api/topics", () => {
   });
 });
 
+describe("GET /api/topics/:topic", () => {
+  test("200, respond with object with property of slug & description", () => {
+    return request(app)
+      .get("/api/topics/mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const topic = body.topic;
+        expect(topic).toEqual({
+          description: "The man, the Mitch, the legend",
+          slug: "mitch",
+        });
+      });
+  });
+  describe("404: topic doesn't exist", () => {
+    test("404: respond with message of Bad Request", () => {
+      return request(app)
+        .get("/api/topics/random")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "Topic doesn't exist",
+          });
+        });
+    });
+  });
+});
+
 describe("404: end point not found", () => {
   test("404: respond with message of endpoint doesn't exist", () => {
     return request(app)
@@ -43,6 +71,82 @@ describe("404: end point not found", () => {
         expect(body).toHaveProperty("message");
         expect(body.message).toBe("endpoint doesn't exist");
       });
+  });
+});
+
+describe("GET api/articles", () => {
+  test("200: respond with array of articles and additional column of comment_count", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesArray = body.articles;
+
+        expect(articlesArray).toHaveLength(12);
+
+        articlesArray.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              topic: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_id: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+  test("200: respond with array of articles filtered by query of topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesArray = body.articles;
+
+        expect(articlesArray).toHaveLength(11);
+
+        articlesArray.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              title: expect.any(String),
+              topic: "mitch",
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_id: expect.any(Number),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
+  test("200: respond with empty array when no articles exist for topic", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesArray = body.articles;
+        expect(articlesArray).toEqual([]);
+      });
+  });
+  describe("404: topic doesn't exist", () => {
+    test("404: return message to indicate no data available for topic", () => {
+      return request(app)
+        .get("/api/articles?topic=random")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "Topic doesn't exist",
+          });
+        });
+    });
   });
 });
 
