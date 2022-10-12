@@ -278,7 +278,6 @@ describe("GET /api/articles/:article_id/comments", () => {
         .get("/api/articles/13/comment")
         .expect(404)
         .then(({ body }) => {
-          console.log("Inside test");
           expect(body).toEqual({
             status: 404,
             message: "article id doesn't exist",
