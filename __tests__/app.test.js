@@ -283,6 +283,19 @@ describe("GET api/users/:username", () => {
         });
       });
   });
+  describe("404: Username doesn't exist", () => {
+    test("404: Returns message that username doesn't exist", () => {
+      return request(app)
+        .get("/api/users/billywhoisbilly")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "username doesn't exist",
+          });
+        });
+    });
+  });
 });
 
 describe("PATCH /api/articles/:article_id", () => {
@@ -386,7 +399,6 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-
 describe("GET /api/articles/:article_id/comments", () => {
   test("200: return array of comments with given article_id, sorted by earliest date first", () => {
     return request(app)
@@ -453,7 +465,6 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-
 describe("POST api/articles/:article_id/comments", () => {
   test.skip("200: returns object of article with updated votes", () => {
     return request(app)
@@ -474,5 +485,5 @@ describe("POST api/articles/:article_id/comments", () => {
           votes: 0,
         });
       });
-  })
-})
+  });
+});
