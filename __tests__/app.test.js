@@ -246,7 +246,7 @@ describe("PATCH /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("200: return array of comments with given article_id", () => {
+  test("200: return array of comments with given article_id, sorted by earliest date first", () => {
     return request(app)
       .get("/api/articles/1/comment")
       .expect(200)
