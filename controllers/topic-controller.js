@@ -1,8 +1,11 @@
 const {
   selectTopics,
-  selectUsers,
   selectTopicDescByTopic,
 } = require("../models/topic-model.js");
+
+const {
+  selectUsers,
+} = require("../models/user-model.js");
 
 const getTopics = (request, response) => {
   selectTopics().then(({ rows: topics }) => {
@@ -10,11 +13,6 @@ const getTopics = (request, response) => {
   });
 };
 
-const getUsers = (request, response) => {
-  selectUsers().then((users) => {
-    response.status(200).send({ users });
-  });
-};
 
 const getTopicDescByTopic = (request, response, next) => {
   const { topic } = request.params;
@@ -27,8 +25,9 @@ const getTopicDescByTopic = (request, response, next) => {
     });
 };
 
+
+
 module.exports = {
   getTopics,
-  getUsers,
   getTopicDescByTopic,
 };

@@ -1,6 +1,11 @@
 const express = require("express");
 
-const { getTopics, getUsers, getTopicDescByTopic } = require("./controllers/topic-controller");
+const {
+  getTopics,
+  getTopicDescByTopic,
+} = require("./controllers/topic-controller");
+
+const { getUsers, getUserByUsername } = require("./controllers/user-controller.js");
 
 const {
   getArticles,
@@ -23,6 +28,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/users", getUsers);
+
+app.get("/api/users/:username", getUserByUsername);
 
 app.patch("/api/articles/:article_id", updateArticleById);
 
