@@ -195,7 +195,7 @@ describe("GET api/articles", () => {
     });
   });
   describe("400: sort_by and order not on whitelist", () => {
-    test.only("400: return message to indicate bad request", () => {
+    test("400: return message to indicate bad request", () => {
       return request(app)
         .get("/api/articles?sort_by='Drop nc_news'")
         .expect(400)
