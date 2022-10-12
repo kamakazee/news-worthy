@@ -4,10 +4,18 @@ const {
   setArticleById,
 } = require("../models/article-model.js");
 
-const getArticles = (request, response) => {
-  selectArticles().then((articles) => {
-    response.status(200).send({ articles });
-  });
+const getArticles = (request, response, next) => {
+  const { topic } = request.query;
+
+  //console.log("topic", topic)
+
+  selectArticles(topic)
+    .then((articles) => {
+      response.status(200).send({ articles });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 const getArticleById = (request, response, next) => {
@@ -23,7 +31,6 @@ const getArticleById = (request, response, next) => {
 };
 
 const updateArticleById = (request, response, next) => {
-
   const { article_id } = request.params;
   const { inc_votes } = request.body;
   const queryKeys = Object.keys(request.body);
