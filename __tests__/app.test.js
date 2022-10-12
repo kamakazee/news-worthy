@@ -48,7 +48,7 @@ describe("GET /api/topics/:topic", () => {
       });
   });
   describe("404: topic doesn't exist", () => {
-    test.only("404: respond with message of Bad Request", () => {
+    test("404: respond with message of Bad Request", () => {
       return request(app)
         .get("/api/topics/random")
         .expect(404)
@@ -125,6 +125,16 @@ describe("GET api/articles", () => {
         });
       });
   });
+
+  test("200: respond with empty array when no articles exist for topic", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(({ body }) => {
+        const articlesArray = body.articles;
+        expect(articlesArray).toEqual([]);
+      });
+  });
   describe("404: topic doesn't exist", () => {
     test("404: return message to indicate no data available for topic", () => {
       return request(app)
@@ -133,7 +143,7 @@ describe("GET api/articles", () => {
         .then(({ body }) => {
           expect(body).toEqual({
             status: 404,
-            message: "No articles with selected topic",
+            message: "Topic doesn't exist",
           });
         });
     });

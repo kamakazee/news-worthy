@@ -1,4 +1,5 @@
 const db = require("../db/connection.js");
+const { selectTopicDescByTopic } = require("./topic-model.js");
 
 const selectArticles = (topic) => {
   let stringQuery = `SELECT articles.*, COUNT(articles.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
@@ -10,18 +11,10 @@ const selectArticles = (topic) => {
   stringQuery += ` GROUP BY articles.article_id`;
 
   if (topic) {
-    return db.query(stringQuery, [topic]).then(({ rows: articles }) => {
-      
-      if(articles.length>0){
-
+    return selectTopicDescByTopic(topic).then(() => {
+      return db.query(stringQuery, [topic]).then(({ rows: articles }) => {
         return articles;
-      }else{
-        return Promise.reject({
-          status: 404,
-          message: "No articles with selected topic",
-        });
-      }
-      
+      });
     });
   } else {
     return db.query(stringQuery).then(({ rows: articles }) => {
