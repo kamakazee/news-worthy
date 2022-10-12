@@ -34,6 +34,34 @@ describe("GET /api/topics", () => {
   });
 });
 
+describe("GET /api/topics/:topic", () => {
+  test("200, respond with object with property of slug & description", () => {
+    return request(app)
+      .get("/api/topics/mitch")
+      .expect(200)
+      .then(({ body }) => {
+        const topic = body.topic;
+        expect(topic).toEqual({
+          description: "The man, the Mitch, the legend",
+          slug: "mitch",
+        });
+      });
+  });
+  describe("404: topic doesn't exist", () => {
+    test.only("404: respond with message of Bad Request", () => {
+      return request(app)
+        .get("/api/topics/random")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "Topic doesn't exist",
+          });
+        });
+    });
+  });
+});
+
 describe("404: end point not found", () => {
   test("404: respond with message of endpoint doesn't exist", () => {
     return request(app)
@@ -97,8 +125,8 @@ describe("GET api/articles", () => {
         });
       });
   });
-  describe("400: topic doesn't exist", () => {
-    test("400: return message to indicate no data available for topic", () => {
+  describe("404: topic doesn't exist", () => {
+    test("404: return message to indicate no data available for topic", () => {
       return request(app)
         .get("/api/articles?topic=random")
         .expect(404)
