@@ -5,7 +5,10 @@ const {
   getTopicDescByTopic,
 } = require("./controllers/topic-controller");
 
-const { getUsers, getUserByUsername } = require("./controllers/user-controller.js");
+const {
+  getUsers,
+  getUserByUsername,
+} = require("./controllers/user-controller.js");
 
 const {
   getArticles,
@@ -13,7 +16,10 @@ const {
   updateArticleById,
 } = require("./controllers/article-controller.js");
 
-const { getCommentsByArticleId} = require("./controllers/comment-controller.js");
+const {
+  getCommentsByArticleId,
+  postCommentByArticleId,
+} = require("./controllers/comment-controller.js");
 
 const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
 
@@ -36,6 +42,8 @@ app.get("/api/users", getUsers);
 app.get("/api/users/:username", getUserByUsername);
 
 app.patch("/api/articles/:article_id", updateArticleById);
+
+app.post("/api/articles/:article_id/comment", postCommentByArticleId);
 
 app.use((request, response, next) => {
   response.status(404).send({ status: 404, message: "endpoint doesn't exist" });

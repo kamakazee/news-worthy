@@ -466,18 +466,19 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST api/articles/:article_id/comments", () => {
-  test.skip("200: returns object of article with updated votes", () => {
+  test("200: returns object of article with updated votes", () => {
     return request(app)
-      .post(`/api/articles/1/comments`)
+      .post(`/api/articles/1/comment`)
       .send({
         username: "icellusedkars",
         body: "blah blah blah blah something newsy blah blah blah",
       })
       .expect(200)
       .then(({ body }) => {
-        const article = body.article;
+        const comment = body.comment;
 
-        expect(article).toEqual({
+        expect(comment).toEqual({
+          comment_id: expect.any(Number),
           article_id: 1,
           author: "icellusedkars",
           body: "blah blah blah blah something newsy blah blah blah",
