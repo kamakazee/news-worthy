@@ -255,7 +255,7 @@ describe("GET /api/articles/:article_id/comments", () => {
 
         expect(commentsArray).toHaveLength(11);
 
-        expect(commentsArray).toBeSortedBy('created_at',{descending:true});
+        expect(commentsArray).toBeSortedBy("created_at", { descending: true });
 
         commentsArray.forEach((comment) => {
           expect(comment).toEqual(
@@ -270,5 +270,34 @@ describe("GET /api/articles/:article_id/comments", () => {
           );
         });
       });
+  });
+
+  describe("404: article id doesn't exist", () => {
+    test("404: article id doesn't exist", () => {
+      return request(app)
+        .get("/api/articles/13/comment")
+        .expect(404)
+        .then(({ body }) => {
+          console.log("Inside test");
+          expect(body).toEqual({
+            status: 404,
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: article id is a string instead of a number", () => {
+    test("400: Respond with error message that article id passed is not correct type", () => {
+      return request(app)
+        .get("/api/articles/string/comment")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
   });
 });
