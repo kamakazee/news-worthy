@@ -103,7 +103,6 @@ describe("GET api/articles", () => {
         .get("/api/articles?topic=random")
         .expect(404)
         .then(({ body }) => {
-          console.log(body," body inside test")
           expect(body).toEqual({
             status: 404,
             message: "No articles with selected topic",
