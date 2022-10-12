@@ -487,4 +487,75 @@ describe("POST api/articles/:article_id/comments", () => {
         });
       });
   });
+
+  describe("404: article id doesn't exist", () => {
+    test("404: returns message, article id doesnt exist", () => {
+      return request(app)
+        .post(`/api/articles/13/comment`)
+        .send({
+          username: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: article id is wrong type", () => {
+    test("400: returns message of bad request", () => {
+      return request(app)
+        .post(`/api/articles/number/comment`)
+        .send({
+          username: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+  describe("400: username in body doesn't exist", () => {
+    test("400: returns message of bad request", () => {
+      return request(app)
+        .post(`/api/articles/number/comment`)
+        .send({
+          username: "somebodyanybody",
+          body: "blah blah blah blah something newsy blah blah blah",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+
+  describe("400: body of comment is empty", () => {
+    test("400: returns message of Comment body is empty", () => {
+      return request(app)
+        .post(`/api/articles/number/comment`)
+        .send({
+          username: "somebodyanybody",
+          body: "",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Comment body is empty",
+          });
+        });
+    });
+  });
 });

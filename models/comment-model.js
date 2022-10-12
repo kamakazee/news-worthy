@@ -16,6 +16,13 @@ const selectCommentsByArticleId = (article_id) => {
 };
 
 const insertCommentByArticleId = (article_id, username, message) => {
+
+  if(message.length===0){
+    return Promise.reject({
+      status: 400,
+      message: "Comment body is empty",
+    });
+  }
   const promises = [
     selectArticleById(article_id),
     selectUserByUsername(username),

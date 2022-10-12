@@ -20,9 +20,13 @@ const postCommentByArticleId = (request, response, next) => {
   const { article_id } = request.params;
   const { username, body: message } = request.body;
 
-  insertCommentByArticleId(article_id, username, message).then((comment) => {
-    response.status(200).send({ comment });
-  });
+  insertCommentByArticleId(article_id, username, message)
+    .then((comment) => {
+      response.status(200).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
 
 module.exports = { getCommentsByArticleId, postCommentByArticleId };
