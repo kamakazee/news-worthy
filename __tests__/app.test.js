@@ -135,6 +135,79 @@ describe("GET api/articles", () => {
         expect(articlesArray).toEqual([]);
       });
   });
+
+  describe("GET api/articles sortby and order by queries", () => {
+    test("200: respond with array of articles sort by default of date descending", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          const articlesArray = body.articles;
+
+          expect(articlesArray).toHaveLength(12);
+
+          expect(articlesArray).toBeSortedBy("created_at", {
+            descending: true,
+          });
+
+          articlesArray.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_id: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("200: respond with array of articles sort by author ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author&&order=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          const articlesArray = body.articles;
+
+          expect(articlesArray).toHaveLength(12);
+
+          expect(articlesArray).toBeSortedBy("author", { descending: false });
+
+          articlesArray.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_id: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+  });
+  describe("400: sort_by and order not on whitelist", () => {
+    test.only("400: return message to indicate bad request", () => {
+      return request(app)
+        .get("/api/articles?sort_by='Drop nc_news'")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+
   describe("404: topic doesn't exist", () => {
     test("404: return message to indicate no data available for topic", () => {
       return request(app)
