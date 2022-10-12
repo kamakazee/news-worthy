@@ -8,6 +8,8 @@ const {
   updateArticleById,
 } = require("./controllers/article-controller.js");
 
+const { getCommentsByArticleId} = require("./controllers/comment-controller.js");
+
 const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
 
 const app = express();
@@ -21,6 +23,8 @@ app.get("/api/topics/:topic", getTopicDescByTopic);
 app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles/:article_id/comment", getCommentsByArticleId);
 
 app.get("/api/users", getUsers);
 
