@@ -8,7 +8,7 @@ const {
   updateArticleById,
 } = require("./controllers/article-controller.js");
 
-const { getCommentsByArticleId} = require("./controllers/comment-controller.js");
+const { getCommentsByArticleId ,removeCommentById} = require("./controllers/comment-controller.js");
 
 const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
 
@@ -29,6 +29,8 @@ app.get("/api/articles/:article_id/comment", getCommentsByArticleId);
 app.get("/api/users", getUsers);
 
 app.patch("/api/articles/:article_id", updateArticleById);
+
+app.delete("/api/comments/:comment_id", removeCommentById);
 
 app.use((request, response, next) => {
   response.status(404).send({ status: 404, message: "endpoint doesn't exist" });
