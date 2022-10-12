@@ -17,7 +17,6 @@ const selectTopicDescByTopic = (topic) => {
       if (topics.length > 0) {
         return topics[0];
       } else {
-        console.log("Inside of else");
         return Promise.reject({
           status: 404,
           message: "Topic doesn't exist",
