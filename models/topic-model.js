@@ -4,12 +4,6 @@ const selectTopics = () => {
   return db.query(`SELECT * FROM topics`);
 };
 
-const selectUsers = () => {
-  return db.query(`SELECT * FROM users`).then(({ rows: users }) => {
-    return users;
-  });
-};
-
 const selectTopicDescByTopic = (topic) => {
   return db
     .query(`SELECT * from topics WHERE slug=$1`, [topic])
@@ -27,6 +21,5 @@ const selectTopicDescByTopic = (topic) => {
 
 module.exports = {
   selectTopics,
-  selectUsers,
   selectTopicDescByTopic,
 };
