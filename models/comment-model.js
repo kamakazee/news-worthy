@@ -16,8 +16,7 @@ const selectCommentsByArticleId = (article_id) => {
 };
 
 const insertCommentByArticleId = (article_id, username, message) => {
-
-  if(message.length===0){
+  if (message.length === 0) {
     return Promise.reject({
       status: 400,
       message: "Comment body is empty",
@@ -30,11 +29,18 @@ const insertCommentByArticleId = (article_id, username, message) => {
 
   const values = [message, username, article_id, 0];
 
-  return Promise.all(promises).then((value) => {
-    return db.query(`INSERT INTO comments (body, author, article_id, votes, created_at) VALUES ($1,$2,$3,$4,current_timestamp) RETURNING *`, values).then(({ rows: comments }) => {
-      return comments[0];
-    });
-  });
+  return Promise.all(promises)
+    .then((value) => {
+
+      return db
+        .query(
+          `INSERT INTO comments (body, author, article_id, votes, created_at) VALUES ($1,$2,$3,$4,current_timestamp) RETURNING *`,
+          values
+        )
+        .then(({ rows: comments }) => {
+          return comments[0];
+        });
+    })
 };
 
 module.exports = { selectCommentsByArticleId, insertCommentByArticleId };

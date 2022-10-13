@@ -22,7 +22,7 @@ const postCommentByArticleId = (request, response, next) => {
 
   insertCommentByArticleId(article_id, username, message)
     .then((comment) => {
-      response.status(200).send({ comment });
+      response.status(201).send({ comment });
     })
     .catch((err) => {
       next(err);

@@ -466,14 +466,37 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST api/articles/:article_id/comments", () => {
-  test("200: returns object of article with updated votes", () => {
+  test("201: returns object of newly created comment, ", () => {
     return request(app)
       .post(`/api/articles/1/comment`)
       .send({
         username: "icellusedkars",
         body: "blah blah blah blah something newsy blah blah blah",
       })
-      .expect(200)
+      .expect(201)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: expect.any(Number),
+          article_id: 1,
+          author: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
+  });
+
+  test("201: returns object of newly created comment, additional keys are ignored ", () => {
+    return request(app)
+      .post(`/api/articles/1/comment`)
+      .send({
+        username: "icellusedkars",
+        body: "blah blah blah blah something newsy blah blah blah",
+        votes: 1000
+      })
+      .expect(201)
       .then(({ body }) => {
         const comment = body.comment;
 
@@ -523,19 +546,19 @@ describe("POST api/articles/:article_id/comments", () => {
         });
     });
   });
-  describe("400: username in body doesn't exist", () => {
-    test("400: returns message of bad request", () => {
+  describe("404: username in body doesn't exist", () => {
+    test("404: returns message that username doesnt exist", () => {
       return request(app)
-        .post(`/api/articles/number/comment`)
+        .post(`/api/articles/1/comment`)
         .send({
           username: "somebodyanybody",
           body: "blah blah blah blah something newsy blah blah blah",
         })
-        .expect(400)
+        .expect(404)
         .then(({ body }) => {
           expect(body).toEqual({
-            status: 400,
-            message: "Bad Request",
+            status: 404,
+            message: "username doesn't exist",
           });
         });
     });
