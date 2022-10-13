@@ -18,7 +18,7 @@ const {
 
 const {
   getCommentsByArticleId,
-  postCommentByArticleId,
+  postCommentByArticleId,removeCommentById
 } = require("./controllers/comment-controller.js");
 
 const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
@@ -42,6 +42,8 @@ app.get("/api/users", getUsers);
 app.get("/api/users/:username", getUserByUsername);
 
 app.patch("/api/articles/:article_id", updateArticleById);
+
+app.delete("/api/comments/:comment_id", removeCommentById);
 
 app.post("/api/articles/:article_id/comment", postCommentByArticleId);
 

@@ -15,6 +15,23 @@ const selectCommentsByArticleId = (article_id) => {
   });
 };
 
+const deleteCommentById = (comment_id) => {
+
+  return db
+    .query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [comment_id])
+    .then(({ rows: comments }) => {
+      if(comments.length>0){
+        return comments[0];
+      }else{
+        return Promise.reject({
+          status: 404,
+          message: "comment_id doesn't exist",
+        });
+      }
+      
+    });
+};
+
 const insertCommentByArticleId = (article_id, username, message) => {
   if (message.length === 0) {
     return Promise.reject({
@@ -43,4 +60,4 @@ const insertCommentByArticleId = (article_id, username, message) => {
     })
 };
 
-module.exports = { selectCommentsByArticleId, insertCommentByArticleId };
+module.exports = { selectCommentsByArticleId, insertCommentByArticleId, deleteCommentById  };

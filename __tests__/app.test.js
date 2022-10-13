@@ -607,7 +607,25 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 describe("POST api/articles/:article_id/comments", () => {
+
   test("201: returns object of newly created comment, ", () => {
     return request(app)
       .post(`/api/articles/1/comment`)
@@ -653,6 +671,8 @@ describe("POST api/articles/:article_id/comments", () => {
       });
   });
 
+
+
   describe("404: article id doesn't exist", () => {
     test("404: returns message, article id doesnt exist", () => {
       return request(app)
@@ -665,6 +685,7 @@ describe("POST api/articles/:article_id/comments", () => {
         .then(({ body }) => {
           expect(body).toEqual({
             status: 404,
+            message: "comment_id doesn't exist",
             message: "article id doesn't exist",
           });
         });
@@ -719,6 +740,44 @@ describe("POST api/articles/:article_id/comments", () => {
           expect(body).toEqual({
             status: 400,
             message: "Comment body is empty",
+          });
+        });
+    });
+  });
+});
+
+describe("204: delete comment by comment_id", () => {
+  test("204: returns no content on completion", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  describe("404: comment_id doesn't exist", () => {
+    test("404: returns message of id doesn't exist", () => {
+      return request(app)
+        .delete("/api/comments/50")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "comment_id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: comment_id is wrong type", () => {
+    test("400: returns message of Bad Request", () => {
+      return request(app)
+        .delete("/api/comments/notanumber")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
           });
         });
     });
