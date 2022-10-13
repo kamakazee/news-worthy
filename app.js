@@ -1,5 +1,7 @@
 const express = require("express");
 
+const {getAPI} = require("./controllers/api-controller");
+
 const {
   getTopics,
   getTopicDescByTopic,
@@ -27,9 +29,15 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/api", getAPI);
+
 app.get("/api/topics", getTopics);
 
 app.get("/api/topics/:topic", getTopicDescByTopic);
+
+app.get("/api/users", getUsers);
+
+app.get("/api/users/:username", getUserByUsername);
 
 app.get("/api/articles", getArticles);
 
@@ -37,15 +45,11 @@ app.get("/api/articles/:article_id", getArticleById);
 
 app.get("/api/articles/:article_id/comment", getCommentsByArticleId);
 
-app.get("/api/users", getUsers);
-
-app.get("/api/users/:username", getUserByUsername);
-
-app.patch("/api/articles/:article_id", updateArticleById);
-
 app.delete("/api/comments/:comment_id", removeCommentById);
 
 app.post("/api/articles/:article_id/comment", postCommentByArticleId);
+
+app.patch("/api/articles/:article_id", updateArticleById);
 
 app.use((request, response, next) => {
   response.status(404).send({ status: 404, message: "endpoint doesn't exist" });
