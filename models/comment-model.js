@@ -17,10 +17,6 @@ const selectCommentsByArticleId = (article_id) => {
 
 const deleteCommentById = (comment_id) => {
 
-  console.log("Inside of model")
-
-  console.log("comment_id: ", comment_id)
-
   return db
     .query(`DELETE FROM comments WHERE comment_id=$1 RETURNING *`, [comment_id])
     .then(({ rows: comments }) => {
