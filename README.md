@@ -26,18 +26,19 @@ The development of the codebase followed a "test first" approach, so there is si
 
 ---
 
-# Setup
+# Quickstart
 Fork and clone this repository, once that is done, follow the steps below to get up and running.
 
 
 ## Project dependencies
 
-- Express
-- Jest
-- supertest
-- PostgreSQL
+Minimumum versions of following modules required for this repository
 
-To install all the dependencies run the following command in the terminal
+- Node.js v18
+- PostgreSQL 8.7.3
+
+
+To install required dependencies run the following command in the terminal
 
 ```
 npm install 
@@ -100,3 +101,29 @@ Provided you have followed the previous steps, you are ready to run the test scr
 npm test app.test.js
 ```
 If successful, you would see the tests associated to all the endpoints being executed in the terminal, there should be 42 tests in total.
+# Database Stucture
+
+## Data
+The SQL database contains four tables
+- articles
+- comments
+- topics
+- users
+
+The data used to populate these tables are stored in the following folder:
+
+```
+db/data/
+```
+This contains two folders:
+
+- test-data
+- development-data
+
+The data stored in these folders are in `.json` format
+## Seeding
+To populate the tables, you can manually run the following command in the terminal
+```
+npm run seed
+```
+This would populate the nc_news databse with the development data.
