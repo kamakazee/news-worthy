@@ -5,11 +5,10 @@ const {
 } = require("../models/article-model.js");
 
 const getArticles = (request, response, next) => {
-  const { topic } = request.query;
 
-  //console.log("topic", topic)
+  const { topic, sort_by = "created_at", order = "DESC" } = request.query;
 
-  selectArticles(topic)
+  selectArticles(topic, sort_by, order.toUpperCase())
     .then((articles) => {
       response.status(200).send({ articles });
     })

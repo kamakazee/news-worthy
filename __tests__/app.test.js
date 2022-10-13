@@ -135,6 +135,149 @@ describe("GET api/articles", () => {
         expect(articlesArray).toEqual([]);
       });
   });
+
+  describe("GET api/articles sortby and order by queries", () => {
+    test("200: respond with array of articles sort by default of date descending", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          const articlesArray = body.articles;
+
+          expect(articlesArray).toHaveLength(12);
+
+          expect(articlesArray).toBeSortedBy("created_at", {
+            descending: true,
+          });
+
+          articlesArray.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_id: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("200: respond with array of articles sorted by author", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(({ body }) => {
+          const articlesArray = body.articles;
+
+          expect(articlesArray).toHaveLength(12);
+
+          expect(articlesArray).toBeSortedBy("author", {
+            descending: true,
+          });
+
+          articlesArray.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_id: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("200: respond with array of articles ordered by ascending", () => {
+      return request(app)
+        .get("/api/articles?order=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          const articlesArray = body.articles;
+
+          expect(articlesArray).toHaveLength(12);
+
+          expect(articlesArray).toBeSortedBy("created_at", { descending: false });
+
+          articlesArray.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_id: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+    test("200: respond with array of articles sort by author and ascending", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author&&order=ASC")
+        .expect(200)
+        .then(({ body }) => {
+          const articlesArray = body.articles;
+
+          expect(articlesArray).toHaveLength(12);
+
+          expect(articlesArray).toBeSortedBy("author", { descending: false });
+
+          articlesArray.forEach((article) => {
+            expect(article).toEqual(
+              expect.objectContaining({
+                title: expect.any(String),
+                topic: expect.any(String),
+                author: expect.any(String),
+                body: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                article_id: expect.any(Number),
+                comment_count: expect.any(Number),
+              })
+            );
+          });
+        });
+    });
+  });
+  describe("400: sort_by and order not on whitelist", () => {
+    test("400: return message to indicate bad request", () => {
+      return request(app)
+        .get("/api/articles?sort_by='Drop nc_news'")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+
+  describe("400: invalid order by", () => {
+    test("400: return message of bad request", () => {
+      return request(app)
+        .get("/api/articles?order=random")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+
   describe("404: topic doesn't exist", () => {
     test("404: return message to indicate no data available for topic", () => {
       return request(app)
@@ -264,6 +407,36 @@ describe("GET /api/users", () => {
           );
         });
       });
+  });
+});
+
+describe("GET api/users/:username", () => {
+  test("200: returns object of user requsted by usermame", () => {
+    return request(app)
+      .get("/api/users/icellusedkars")
+      .expect(200)
+      .then(({ body }) => {
+        const user = body.user;
+        expect(user).toEqual({
+          username: "icellusedkars",
+          name: "sam",
+          avatar_url:
+            "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
+        });
+      });
+  });
+  describe("404: Username doesn't exist", () => {
+    test("404: Returns message that username doesn't exist", () => {
+      return request(app)
+        .get("/api/users/billywhoisbilly")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "username doesn't exist",
+          });
+        });
+    });
   });
 });
 
@@ -434,6 +607,145 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+describe("POST api/articles/:article_id/comments", () => {
+
+  test("201: returns object of newly created comment, ", () => {
+    return request(app)
+      .post(`/api/articles/1/comment`)
+      .send({
+        username: "icellusedkars",
+        body: "blah blah blah blah something newsy blah blah blah",
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: expect.any(Number),
+          article_id: 1,
+          author: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
+  });
+
+  test("201: returns object of newly created comment, additional keys are ignored ", () => {
+    return request(app)
+      .post(`/api/articles/1/comment`)
+      .send({
+        username: "icellusedkars",
+        body: "blah blah blah blah something newsy blah blah blah",
+        votes: 1000,
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: expect.any(Number),
+          article_id: 1,
+          author: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+          created_at: expect.any(String),
+          votes: 0,
+        });
+      });
+  });
+
+
+
+  describe("404: article id doesn't exist", () => {
+    test("404: returns message, article id doesnt exist", () => {
+      return request(app)
+        .post(`/api/articles/13/comment`)
+        .send({
+          username: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "comment_id doesn't exist",
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: article id is wrong type", () => {
+    test("400: returns message of bad request", () => {
+      return request(app)
+        .post(`/api/articles/number/comment`)
+        .send({
+          username: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+  describe("404: username in body doesn't exist", () => {
+    test("404: returns message that username doesnt exist", () => {
+      return request(app)
+        .post(`/api/articles/1/comment`)
+        .send({
+          username: "somebodyanybody",
+          body: "blah blah blah blah something newsy blah blah blah",
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "username doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: body of comment is empty", () => {
+    test("400: returns message of Comment body is empty", () => {
+      return request(app)
+        .post(`/api/articles/number/comment`)
+        .send({
+          username: "somebodyanybody",
+          body: "",
+        })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Comment body is empty",
+          });
+        });
+    });
+  });
+});
+
 describe("204: delete comment by comment_id", () => {
   test("204: returns no content on completion", () => {
     return request(app)
@@ -456,6 +768,7 @@ describe("204: delete comment by comment_id", () => {
         });
     });
   });
+
   describe("400: comment_id is wrong type", () => {
     test("400: returns message of Bad Request", () => {
       return request(app)
