@@ -1,26 +1,42 @@
 const db = require("../db/connection.js");
 const { selectTopicDescByTopic } = require("./topic-model.js");
 
-const selectArticles = (topic) => {
-  let stringQuery = `SELECT articles.*, COUNT(articles.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
+const selectArticles = (topic, sortby, order) => {
 
-  if (topic) {
-    stringQuery += ` WHERE articles.topic=$1`;
-  }
+  const sortbyValid = ["created_at", "votes", "title", "topic", "author"]
+  const orderValid = ["ASC", "DESC"]
 
-  stringQuery += ` GROUP BY articles.article_id`;
+  if(sortbyValid.includes(sortby) && orderValid.includes(order)){
 
-  if (topic) {
-    return selectTopicDescByTopic(topic).then(() => {
-      return db.query(stringQuery, [topic]).then(({ rows: articles }) => {
+    let stringQuery = `SELECT articles.*, COUNT(articles.article_id) ::INT AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id`;
+
+    if (topic) {
+      stringQuery += ` WHERE articles.topic=$1`;
+    }
+  
+    stringQuery += ` GROUP BY articles.article_id ORDER BY ${sortby} ${order}`;
+  
+    if (topic) {
+      return selectTopicDescByTopic(topic).then(() => {
+        return db.query(stringQuery, [topic]).then(({ rows: articles }) => {
+          return articles;
+        });
+      });
+    } else {
+      return db.query(stringQuery).then(({ rows: articles }) => {
         return articles;
       });
+    }
+    
+  }else{
+    return Promise.reject({
+      status: 400,
+      message: "Bad Request",
     });
-  } else {
-    return db.query(stringQuery).then(({ rows: articles }) => {
-      return articles;
-    });
+
   }
+
+ 
 };
 
 const selectArticleById = (article_id) => {
