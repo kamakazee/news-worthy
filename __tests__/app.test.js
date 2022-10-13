@@ -783,3 +783,35 @@ describe("204: delete comment by comment_id", () => {
     });
   });
 });
+
+describe("GET /api serves up a json representation of all the available endpoints of the api",()=>{
+  test("200: responds with an object with the following keys to represent endpoints",()=>{
+    return request(app)
+    .get("/api")
+    .expect(200)
+    .then(({ body }) => {
+
+      const api = body.api;
+
+      expect(Object.keys(api)).toHaveLength(11);
+
+      
+        expect(api).toEqual(
+          expect.objectContaining({
+            "GET /api": expect.any(Object),
+            "GET /api/topics": expect.any(Object),
+            "GET /api/topics/:topic": expect.any(Object),
+            "GET /api/users": expect.any(Object),
+            "GET /api/users/:username": expect.any(Object),
+            "GET /api/articles": expect.any(Object),
+            "GET /api/articles/:article_id": expect.any(Object),
+            "GET /api/articles/:article_id/comment": expect.any(Object),
+            "DELETE /api/comments/:comment_id": expect.any(Object),
+            "POST /api/articles/:article_id/comment": expect.any(Object),
+            "PATCH /api/articles/:article_id/comment": expect.any(Object),
+          }))
+     
+    });
+
+  })
+})
