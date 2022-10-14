@@ -799,31 +799,35 @@ describe("GET /api serves up a json representation of all the available endpoint
   })
 })
 
-describe.skip("PATCH /api/comments/:comment_id", () => {
-  test("200: returns object of comment with updated votes", () => {
+
+
+describe("GET api/comments/:comment_id", () => {
+  test.only("200: respond with all comments for endpoint of api/comments", () => {
     return request(app)
-      .patch(`/api/comments/1`)
-      .send({ inc_votes: 10 })
+      .get("/api/comments")
       .expect(200)
       .then(({ body }) => {
-        const article = body.article;
+        const commentsArray = body.comments;
+        expect(commentsArray).toHaveLength(18);
 
-        console.log(article, "Inside of test")
-
-        expect(article).toEqual({
-          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-          votes: 26,
-          author: "butter_bridge",
-          article_id: 9,
-          created_at: "2020-04-06T13:17:000Z",
+        commentsArray.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              article_id: expect.any(Number),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+            })
+          );
         });
       });
   });
 
-  test("200: for an empty body, returns object of article unchanged", () => {
+  test("200: respond with article as requested by article id", () => {
     return request(app)
-      .patch(`/api/articles/1`)
-      .send({})
+      .get("/api/articles/1")
       .expect(200)
       .then(({ body }) => {
         const article = body.article;
@@ -836,15 +840,35 @@ describe.skip("PATCH /api/comments/:comment_id", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
+          comment_count: `11`,
         });
       });
   });
 
-  describe("404: article id doesn't exist", () => {
+  test("200: respond with article as requested by article id", () => {
+    return request(app)
+      .get("/api/articles/3")
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 0,
+          comment_count: "2",
+        });
+      });
+  });
+
+  describe("404: article id id doesn't exist", () => {
     test("404: article id doesn't exist", () => {
       return request(app)
-        .patch("/api/articles/13")
-        .send({ inc_votes: 50 })
+        .get("/api/articles/13")
         .expect(404)
         .then(({ body }) => {
           expect(body).toEqual({
@@ -856,39 +880,9 @@ describe.skip("PATCH /api/comments/:comment_id", () => {
   });
 
   describe("400: article id is a string instead of a number", () => {
-    test("400: Respond with error message that article id passed is not correct type", () => {
+    test("400: Respond with error message that is a bad request", () => {
       return request(app)
-        .patch("/api/articles/string")
-        .send({ inc_votes: 50 })
-        .expect(400)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            status: 400,
-            message: "Bad Request",
-          });
-        });
-    });
-  });
-  describe("400: body has incorrect key", () => {
-    test("400: Respond with error message that key is incorrect", () => {
-      return request(app)
-        .patch("/api/articles/1")
-        .send({ inc: 50 })
-        .expect(400)
-        .then(({ body }) => {
-          expect(body).toEqual({
-            status: 400,
-            message: "Bad Request, body should include a key of inc_votes",
-          });
-        });
-    });
-  });
-
-  describe("400: body has invalid value type for votes", () => {
-    test("400: Respond with error message that votes must be an integer", () => {
-      return request(app)
-        .patch("/api/articles/1")
-        .send({ inc_votes: "string" })
+        .get("/api/articles/string")
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({
