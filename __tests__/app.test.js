@@ -802,7 +802,7 @@ describe("GET /api serves up a json representation of all the available endpoint
 
 
 describe("GET api/comments/:comment_id", () => {
-  test.only("200: respond with all comments for endpoint of api/comments", () => {
+  test("200: respond with all comments for endpoint of api/comments", () => {
     return request(app)
       .get("/api/comments")
       .expect(200)
@@ -825,64 +825,60 @@ describe("GET api/comments/:comment_id", () => {
       });
   });
 
-  test("200: respond with article as requested by article id", () => {
+  test("200: respond with comment as requested by comment id", () => {
     return request(app)
-      .get("/api/articles/1")
+      .get("/api/comments/1")
       .expect(200)
       .then(({ body }) => {
-        const article = body.article;
+        const comment = body.comment;
 
-        expect(article).toEqual({
-          article_id: 1,
-          title: "Living in the shadow of a great man",
-          topic: "mitch",
-          author: "butter_bridge",
-          body: "I find this existence challenging",
-          created_at: "2020-07-09T20:11:00.000Z",
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          article_id: 9,
+          author: 'butter_bridge',
+          votes: 16,
+          created_at: "2020-04-06T12:17:00.000Z"
+        });
+      });
+  });
+
+  test("200: respond with comment as requested by comment id", () => {
+    return request(app)
+      .get("/api/comments/3")
+      .expect(200)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: 3,
+          body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
           votes: 100,
-          comment_count: `11`,
-        });
-      });
-  });
-
-  test("200: respond with article as requested by article id", () => {
-    return request(app)
-      .get("/api/articles/3")
-      .expect(200)
-      .then(({ body }) => {
-        const article = body.article;
-
-        expect(article).toEqual({
-          article_id: 3,
-          title: "Eight pug gifs that remind me of mitch",
-          topic: "mitch",
           author: "icellusedkars",
-          body: "some gifs",
-          created_at: "2020-11-03T09:12:00.000Z",
-          votes: 0,
-          comment_count: "2",
+          article_id: 1,
+          created_at: "2020-03-01T01:13:00.000Z",
         });
       });
   });
 
-  describe("404: article id id doesn't exist", () => {
-    test("404: article id doesn't exist", () => {
+  describe("404: comment id id doesn't exist", () => {
+    test("404: comment id doesn't exist", () => {
       return request(app)
-        .get("/api/articles/13")
+        .get("/api/comments/19")
         .expect(404)
         .then(({ body }) => {
           expect(body).toEqual({
             status: 404,
-            message: "article id doesn't exist",
+            message: "comment id doesn't exist",
           });
         });
     });
   });
 
-  describe("400: article id is a string instead of a number", () => {
+  describe("400: comment id is a string instead of a number", () => {
     test("400: Respond with error message that is a bad request", () => {
       return request(app)
-        .get("/api/articles/string")
+        .get("/api/comments/string")
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({

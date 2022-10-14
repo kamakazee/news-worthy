@@ -20,7 +20,7 @@ const {
 
 const {
   getCommentsByArticleId,
-  postCommentByArticleId,removeCommentById, updateCommentById, getComments
+  postCommentByArticleId,removeCommentById, updateCommentById, getComments, getCommentById
 } = require("./controllers/comment-controller.js");
 
 const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
@@ -52,6 +52,8 @@ app.post("/api/articles/:article_id/comment", postCommentByArticleId);
 app.patch("/api/articles/:article_id", updateArticleById);
 
 app.get("/api/comments", getComments);
+
+app.get("/api/comments/:comment_id", getCommentById);
 
 app.patch("/api/comments/:comment_id", updateCommentById);
 

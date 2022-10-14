@@ -63,10 +63,27 @@ const insertCommentByArticleId = (article_id, username, message) => {
 const selectComments = ()=>{
 
   return db.query(`SELECT * FROM comments`).then(({rows:comments})=>{
-
-    console.log("Returned comment", comments)
-
     return comments
+  })
+}
+
+
+const selectCommentById = (comment_id)=>{
+
+  console.log("Inside of model")
+
+  return db.query(`SELECT * FROM comments WHERE comment_id = $1`, [comment_id]).then(({rows:comments})=>{
+
+    if(comments.length>0){
+      return comments[0]
+    }else{
+      return Promise.reject({
+        status: 404,
+        message: "comment id doesn't exist",
+      });
+
+    }
+    
   })
 }
 
@@ -81,4 +98,4 @@ const setCommentById = (comment_id, inc_votes)=>{
  })
 }
 
-module.exports = { selectCommentsByArticleId, insertCommentByArticleId, deleteCommentById , setCommentById, selectComments };
+module.exports = { selectCommentsByArticleId, insertCommentByArticleId, deleteCommentById , setCommentById, selectComments, selectCommentById };
