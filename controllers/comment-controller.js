@@ -1,8 +1,7 @@
-const { response } = require("../app.js");
 const {
   selectCommentsByArticleId,
   deleteCommentById,
-  insertCommentByArticleId,
+  insertCommentByArticleId, selectComments, selectCommentById, setCommentById
 } = require("../models/comment-model.js");
 
 const getCommentsByArticleId = (request, response, next) => {
@@ -44,4 +43,39 @@ const postCommentByArticleId = (request, response, next) => {
     });
 };
 
-module.exports = { getCommentsByArticleId, removeCommentById, postCommentByArticleId }
+const getComments = (request, response)=>{
+
+  selectComments().then((comments)=>{
+    response.status(200).send({comments})
+  })
+}
+
+const getCommentById = (request, response, next)=>{
+
+  const {comment_id} = request.params
+
+  selectCommentById(comment_id).then((comment)=>{
+    response.status(200).send({comment})
+  }).catch((err)=>{
+    next(err)
+  })
+}
+
+const updateCommentById = (request, response, next)=>{
+
+  const {comment_id}= request.params
+  const {inc_votes} = request.body
+  const queryKeys = Object.keys(request.body);
+
+  setCommentById(comment_id, inc_votes, queryKeys).then((comment)=>{
+
+    response.status(200).send({comment})
+
+  }).catch((err)=>{
+    next(err)
+  })
+
+
+}
+
+module.exports = { getCommentsByArticleId, removeCommentById, postCommentByArticleId, updateCommentById, getComments, getCommentById}

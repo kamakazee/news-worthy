@@ -607,23 +607,6 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 describe("POST api/articles/:article_id/comments", () => {
 
   test("201: returns object of newly created comment, ", () => {
@@ -793,9 +776,8 @@ describe("GET /api serves up a json representation of all the available endpoint
 
       const api = body.api;
 
-      expect(Object.keys(api)).toHaveLength(11);
+      expect(Object.keys(api)).toHaveLength(13);
 
-      
         expect(api).toEqual(
           expect.objectContaining({
             "GET /api": expect.any(Object),
@@ -809,9 +791,199 @@ describe("GET /api serves up a json representation of all the available endpoint
             "DELETE /api/comments/:comment_id": expect.any(Object),
             "POST /api/articles/:article_id/comment": expect.any(Object),
             "PATCH /api/articles/:article_id/comment": expect.any(Object),
+            "GET /api/comments": expect.any(Object),
+            "GET /api/comments/:comment_id": expect.any(Object),
           }))
      
     });
 
   })
 })
+
+describe("GET api/comments/:comment_id", () => {
+  test("200: respond with all comments for endpoint of api/comments", () => {
+    return request(app)
+      .get("/api/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const commentsArray = body.comments;
+        expect(commentsArray).toHaveLength(18);
+
+        commentsArray.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              article_id: expect.any(Number),
+              votes: expect.any(Number),
+              author: expect.any(String),
+              body: expect.any(String),
+              created_at: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+
+  test("200: respond with comment as requested by comment id", () => {
+    return request(app)
+      .get("/api/comments/1")
+      .expect(200)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          article_id: 9,
+          author: 'butter_bridge',
+          votes: 16,
+          created_at: "2020-04-06T12:17:00.000Z"
+        });
+      });
+  });
+
+  test("200: respond with comment as requested by comment id", () => {
+    return request(app)
+      .get("/api/comments/3")
+      .expect(200)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: 3,
+          body: "Replacing the quiet elegance of the dark suit and tie with the casual indifference of these muted earth tones is a form of fashion suicide, but, uh, call me crazy — onyou it works.",
+          votes: 100,
+          author: "icellusedkars",
+          article_id: 1,
+          created_at: "2020-03-01T01:13:00.000Z",
+        });
+      });
+  });
+
+  describe("404: comment id id doesn't exist", () => {
+    test("404: comment id doesn't exist", () => {
+      return request(app)
+        .get("/api/comments/19")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "comment id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: comment id is a string instead of a number", () => {
+    test("400: Respond with error message that is a bad request", () => {
+      return request(app)
+        .get("/api/comments/string")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+});
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: returns object of article with updated votes", () => {
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          article_id: 9,
+          author: 'butter_bridge',
+          votes: 26,
+          created_at: "2020-04-06T12:17:00.000Z"
+        });
+      });
+  });
+
+  test("200: for an empty body, returns object of comment unchanged", () => {
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        const comment = body.comment;
+
+        expect(comment).toEqual({
+          comment_id: 1,
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          article_id: 9,
+          author: 'butter_bridge',
+          votes: 16,
+          created_at: "2020-04-06T12:17:00.000Z"
+        });
+      });
+  });
+
+  describe("404: comment id doesn't exist", () => {
+    test("404: comment id doesn't exist", () => {
+      return request(app)
+        .patch("/api/comments/19")
+        .send({ inc_votes: 50 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "comment id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: comment id is a string instead of a number", () => {
+    test("400: Respond with error message that comment id passed is not correct type", () => {
+      return request(app)
+        .patch("/api/comments/string")
+        .send({ inc_votes: 50 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+  describe("400: body has incorrect key", () => {
+    test("400: Respond with error message that key is incorrect", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc: 50 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request, body should include a key of inc_votes",
+          });
+        });
+    });
+  });
+
+  describe("400: body has invalid value type for votes", () => {
+    test("400: Respond with error message that votes must be an integer", () => {
+      return request(app)
+        .patch("/api/comments/1")
+        .send({ inc_votes: "string" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+});
