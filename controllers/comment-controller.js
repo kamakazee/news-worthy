@@ -61,8 +61,6 @@ const getCommentById = (request, response, next)=>{
   })
 }
 
-
-
 const updateCommentById = (request, response, next)=>{
 
   const {comment_id}= request.params
@@ -71,7 +69,6 @@ const updateCommentById = (request, response, next)=>{
 
   setCommentById(comment_id, inc_votes, queryKeys).then((comment)=>{
 
-    console.log(comment, "Received comment in controller")
     response.status(200).send({comment})
 
   }).catch((err)=>{

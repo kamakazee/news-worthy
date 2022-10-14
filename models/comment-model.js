@@ -90,7 +90,6 @@ const setCommentById = (comment_id, inc_votes, queryKeys) => {
 
     return selectCommentById(comment_id).then((comment)=>{
 
-      console.log(comment, "comment in model")
       return comment
     })
     
@@ -102,7 +101,6 @@ const setCommentById = (comment_id, inc_votes, queryKeys) => {
       comment_id,
     ])
     .then(({ rows: comments }) => {
-      console.log(comments, "inside model");
 
       if(comments.length>0){
         return comments[0];
