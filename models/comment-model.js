@@ -60,4 +60,15 @@ const insertCommentByArticleId = (article_id, username, message) => {
     })
 };
 
-module.exports = { selectCommentsByArticleId, insertCommentByArticleId, deleteCommentById  };
+const setCommentById = (comment_id, inc_votes)=>{
+ return db.query(`UPDATE comments SET votes=$1 WHERE comment_id=$2 RETURNING *;`,
+ [inc_votes, comment_id]).then(({rows: comment})=>{
+  console.log("Returned comment", comment)
+
+  return comment
+ }).catch((err)=>{
+  
+ })
+}
+
+module.exports = { selectCommentsByArticleId, insertCommentByArticleId, deleteCommentById , setCommentById };

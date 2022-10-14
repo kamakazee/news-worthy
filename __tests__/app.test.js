@@ -607,23 +607,6 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 describe("POST api/articles/:article_id/comments", () => {
 
   test("201: returns object of newly created comment, ", () => {
@@ -815,3 +798,104 @@ describe("GET /api serves up a json representation of all the available endpoint
 
   })
 })
+
+describe.skip("PATCH /api/comments/:comment_id", () => {
+  test("200: returns object of comment with updated votes", () => {
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send({ inc_votes: 10 })
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        console.log(article, "Inside of test")
+
+        expect(article).toEqual({
+          body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 26,
+          author: "butter_bridge",
+          article_id: 9,
+          created_at: "2020-04-06T13:17:000Z",
+        });
+      });
+  });
+
+  test("200: for an empty body, returns object of article unchanged", () => {
+    return request(app)
+      .patch(`/api/articles/1`)
+      .send({})
+      .expect(200)
+      .then(({ body }) => {
+        const article = body.article;
+
+        expect(article).toEqual({
+          article_id: 1,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 100,
+        });
+      });
+  });
+
+  describe("404: article id doesn't exist", () => {
+    test("404: article id doesn't exist", () => {
+      return request(app)
+        .patch("/api/articles/13")
+        .send({ inc_votes: 50 })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "article id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: article id is a string instead of a number", () => {
+    test("400: Respond with error message that article id passed is not correct type", () => {
+      return request(app)
+        .patch("/api/articles/string")
+        .send({ inc_votes: 50 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+  describe("400: body has incorrect key", () => {
+    test("400: Respond with error message that key is incorrect", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc: 50 })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request, body should include a key of inc_votes",
+          });
+        });
+    });
+  });
+
+  describe("400: body has invalid value type for votes", () => {
+    test("400: Respond with error message that votes must be an integer", () => {
+      return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "string" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+});
