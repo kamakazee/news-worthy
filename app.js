@@ -4,10 +4,7 @@ const {apiRouter} = require("./routes/api-router.js");
 
 const {topicRouter} = require("./routes/topic-router.js");
 
-const {
-  getUsers,
-  getUserByUsername,
-} = require("./controllers/user-controller.js");
+const {userRouter} = require("./routes/user-router.js");
 
 const {
   getArticles,
@@ -30,9 +27,7 @@ app.use('/api', apiRouter);
 
 app.use('/api/topics', topicRouter);
 
-app.get("/api/users", getUsers);
-
-app.get("/api/users/:username", getUserByUsername);
+app.use('/api/users', userRouter);
 
 app.get("/api/articles", getArticles);
 
