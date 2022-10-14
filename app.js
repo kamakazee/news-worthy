@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {getAPI} = require("./controllers/api-controller");
+const {apiRouter} = require("./routes/api-router.js");
 
 const {
   getTopics,
@@ -29,7 +29,7 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/api", getAPI);
+app.use('/api', apiRouter);
 
 app.get("/api/topics", getTopics);
 
