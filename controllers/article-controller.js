@@ -1,7 +1,7 @@
 const {
   selectArticles,
   selectArticleById,
-  setArticleById,
+  setArticleById, insertArticle
 } = require("../models/article-model.js");
 
 const getArticles = (request, response, next) => {
@@ -43,8 +43,21 @@ const updateArticleById = (request, response, next) => {
     });
 };
 
+const postArticle = (request, response, next)=>{
+
+  const { author, title, body, topic } = request.body;
+
+  insertArticle(author, title, body, topic).then((article)=>{
+    response.status(201).send({article})
+
+  }).catch((err)=>{
+
+    next(err)
+  })
+}
+
 module.exports = {
   getArticles,
   getArticleById,
-  updateArticleById,
+  updateArticleById,postArticle
 };

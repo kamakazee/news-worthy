@@ -1,7 +1,9 @@
 const handlePsqlErrors = (err, request, response, next) => {
   if (err.code === "22P02") {
     response.status(400).send({ status: 400, message: "Bad Request" });
-  } else {
+  } else if(err.code==="23502"){
+    response.status(400).send({ status: 400, message: "Missing keys" });
+  }else{
     next(err);
   }
 };

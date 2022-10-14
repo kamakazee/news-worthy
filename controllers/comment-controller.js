@@ -1,7 +1,7 @@
 const {
   selectCommentsByArticleId,
   deleteCommentById,
-  insertCommentByArticleId, selectComments, selectCommentById, setCommentById
+  insertCommentByArticleId, selectComments, selectCommentById, setCommentById, 
 } = require("../models/comment-model.js");
 
 const getCommentsByArticleId = (request, response, next) => {
@@ -74,8 +74,8 @@ const updateCommentById = (request, response, next)=>{
   }).catch((err)=>{
     next(err)
   })
-
-
 }
+
+
 
 module.exports = { getCommentsByArticleId, removeCommentById, postCommentByArticleId, updateCommentById, getComments, getCommentById}

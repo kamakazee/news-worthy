@@ -988,3 +988,155 @@ describe("PATCH /api/comments/:comment_id", () => {
     });
   });
 });
+
+describe("POST api/articles", () => {
+
+  test("201: returns object of newly created article, ", () => {
+    return request(app)
+      .post(`/api/articles`)
+      .send({
+        author: "icellusedkars",
+        title: "Some new title",
+        body: "blah blah blah blah something newsy blah blah blah",
+        topic: 'paper'
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const article = body.article;
+
+        
+
+        expect(article).toEqual({
+          title: "Some new title",
+              topic: 'paper',
+              author: "icellusedkars",
+              body: "blah blah blah blah something newsy blah blah blah",
+              created_at: expect.any(String),
+              votes: 0,
+              article_id: 13,
+        });
+      });
+  });
+
+  test("201: returns object of newly created article, additional keys are ignored", () => {
+    return request(app)
+      .post(`/api/articles`)
+      .send({
+        author: "icellusedkars",
+        title: "Some new title",
+        body: "blah blah blah blah something newsy blah blah blah",
+        topic: 'paper',
+        funkykey: "fsharp"
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const article = body.article;
+
+        
+
+        expect(article).toEqual({
+          title: "Some new title",
+              topic: 'paper',
+              author: "icellusedkars",
+              body: "blah blah blah blah something newsy blah blah blah",
+              created_at: expect.any(String),
+              votes: 0,
+              article_id: 13,
+        });
+      });
+  });
+
+  test("201: returns object of newly created article, empty body", () => {
+    return request(app)
+      .post(`/api/articles`)
+      .send({
+        author: "icellusedkars",
+        title: "Some new title",
+        body: "",
+        topic: 'paper',
+        funkykey: "fsharp"
+      })
+      .expect(201)
+      .then(({ body }) => {
+        const article = body.article;
+
+        
+
+        expect(article).toEqual({
+          title: "Some new title",
+              topic: 'paper',
+              author: "icellusedkars",
+              body: "",
+              created_at: expect.any(String),
+              votes: 0,
+              article_id: 13,
+        });
+      });
+  });
+
+
+
+  describe("404: author doesn't exist", () => {
+    test("404: returns message, author doesnt exist", () => {
+      return request(app)
+        .post(`/api/articles`)
+        .send({
+          author: "unknown",
+          title: "Some new title",
+          body: "blah blah blah blah something newsy blah blah blah",
+          topic: 'paper',
+          funkykey: "fsharp"
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "username doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("404: topic doesn't exist", () => {
+    test("404: returns message, topic doesnt exist", () => {
+      return request(app)
+        .post(`/api/articles`)
+        .send({
+          author: "icellusedkars",
+          title: "Some new title",
+          body: "blah blah blah blah something newsy blah blah blah",
+          topic: 'blah',
+          funkykey: "fsharp"
+        })
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "Topic doesn't exist",
+          });
+        });
+    });
+  });
+
+
+  describe("404: Missing body key", () => {
+    test("404: returns message, missing keys", () => {
+      return request(app)
+        .post(`/api/articles`)
+        .send({
+          author: "icellusedkars",
+          title: "Some new title",
+          topic: 'paper',
+          funkykey: "fsharp"
+        })
+        .expect(400)
+        .then(({ body }) => {
+
+          expect(body).toEqual({
+            status: 400,
+            message: "Missing keys",
+          });
+        });
+    });
+  });
+});

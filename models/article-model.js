@@ -1,6 +1,8 @@
 const db = require("../db/connection.js");
 const { selectTopicDescByTopic } = require("./topic-model.js");
 
+const { selectUserByUsername } = require("./user-model.js");
+
 const selectArticles = (topic, sortby, order) => {
 
   const sortbyValid = ["created_at", "votes", "title", "topic", "author"]
@@ -100,8 +102,29 @@ const setArticleById = (inc_votes, article_id, queryKeys) => {
   });
 };
 
+const insertArticle = (author, title, body, topic)=>{
+
+  const values=[author, title, body, topic, 0]
+
+  const promises = [selectUserByUsername(author), selectTopicDescByTopic(topic)]
+
+
+  return Promise.all(promises).then((results)=>{
+
+    return db.query(`INSERT INTO articles (author, title, body, topic, votes, created_at) VALUES ($1,$2,$3,$4, $5, current_timestamp) RETURNING *`,
+  values).then(({rows:articles})=>{
+
+    return articles[0]
+  })
+
+  })
+
+  
+
+}
+
 module.exports = {
   selectArticles,
   selectArticleById,
-  setArticleById,
+  setArticleById, insertArticle
 };
