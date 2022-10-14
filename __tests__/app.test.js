@@ -776,9 +776,8 @@ describe("GET /api serves up a json representation of all the available endpoint
 
       const api = body.api;
 
-      expect(Object.keys(api)).toHaveLength(11);
+      expect(Object.keys(api)).toHaveLength(13);
 
-      
         expect(api).toEqual(
           expect.objectContaining({
             "GET /api": expect.any(Object),
@@ -792,14 +791,14 @@ describe("GET /api serves up a json representation of all the available endpoint
             "DELETE /api/comments/:comment_id": expect.any(Object),
             "POST /api/articles/:article_id/comment": expect.any(Object),
             "PATCH /api/articles/:article_id/comment": expect.any(Object),
+            "GET /api/comments": expect.any(Object),
+            "GET /api/comments/:comment_id": expect.any(Object),
           }))
      
     });
 
   })
 })
-
-
 
 describe("GET api/comments/:comment_id", () => {
   test("200: respond with all comments for endpoint of api/comments", () => {
