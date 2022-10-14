@@ -2,10 +2,7 @@ const express = require("express");
 
 const {apiRouter} = require("./routes/api-router.js");
 
-const {
-  getTopics,
-  getTopicDescByTopic,
-} = require("./controllers/topic-controller");
+const {topicRouter} = require("./routes/topic-router.js");
 
 const {
   getUsers,
@@ -31,9 +28,7 @@ app.use(express.json());
 
 app.use('/api', apiRouter);
 
-app.get("/api/topics", getTopics);
-
-app.get("/api/topics/:topic", getTopicDescByTopic);
+app.use('/api/topics', topicRouter);
 
 app.get("/api/users", getUsers);
 
