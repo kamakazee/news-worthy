@@ -6,11 +6,7 @@ const {topicRouter} = require("./routes/topic-router.js");
 
 const {userRouter} = require("./routes/user-router.js");
 
-const {
-  getArticles,
-  getArticleById,
-  updateArticleById,
-} = require("./controllers/article-controller.js");
+const {articleRouter} = require("./routes/article-router.js");
 
 const {
   getCommentsByArticleId,
@@ -29,17 +25,13 @@ app.use('/api/topics', topicRouter);
 
 app.use('/api/users', userRouter);
 
-app.get("/api/articles", getArticles);
-
-app.get("/api/articles/:article_id", getArticleById);
+app.use('/api/articles', articleRouter);
 
 app.get("/api/articles/:article_id/comment", getCommentsByArticleId);
 
 app.delete("/api/comments/:comment_id", removeCommentById);
 
 app.post("/api/articles/:article_id/comment", postCommentByArticleId);
-
-app.patch("/api/articles/:article_id", updateArticleById);
 
 app.use((request, response, next) => {
   response.status(404).send({ status: 404, message: "endpoint doesn't exist" });
