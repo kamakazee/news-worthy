@@ -776,7 +776,7 @@ describe("GET /api serves up a json representation of all the available endpoint
 
       const api = body.api;
 
-      expect(Object.keys(api)).toHaveLength(13);
+      expect(Object.keys(api)).toHaveLength(14);
 
         expect(api).toEqual(
           expect.objectContaining({
@@ -790,9 +790,10 @@ describe("GET /api serves up a json representation of all the available endpoint
             "GET /api/articles/:article_id/comment": expect.any(Object),
             "DELETE /api/comments/:comment_id": expect.any(Object),
             "POST /api/articles/:article_id/comment": expect.any(Object),
-            "PATCH /api/articles/:article_id/comment": expect.any(Object),
+            "PATCH /api/articles/:article_id": expect.any(Object),
             "GET /api/comments": expect.any(Object),
             "GET /api/comments/:comment_id": expect.any(Object),
+            "PATCH /api/comments/:comment_id": expect.any(Object),
           }))
      
     });
