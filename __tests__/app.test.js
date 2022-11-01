@@ -444,10 +444,11 @@ describe("PATCH /api/articles/:article_id", () => {
   test("200: returns object of article with updated votes", () => {
     return request(app)
       .patch(`/api/articles/1`)
-      .send({ inc_votes: 50 })
+      .send({ inc_votes: 2 })
       .expect(200)
       .then(({ body }) => {
         const article = body.article;
+        console.log(article)
 
         expect(article).toEqual({
           article_id: 1,
@@ -456,7 +457,7 @@ describe("PATCH /api/articles/:article_id", () => {
           author: "butter_bridge",
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
-          votes: 50,
+          votes: 102,
         });
       });
   });
