@@ -5,7 +5,7 @@ const { selectUserByUsername } = require("./user-model.js");
 
 const selectArticles = (topic, sortby, order) => {
 
-  const sortbyValid = ["created_at", "votes", "title", "topic", "author"]
+  const sortbyValid = ["created_at", "votes", "title", "topic", "author", "comment_count"]
   const orderValid = ["ASC", "DESC"]
 
   if(sortbyValid.includes(sortby) && orderValid.includes(order)){
