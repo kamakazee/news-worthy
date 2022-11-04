@@ -21,6 +21,7 @@ const selectUserByUsername = (username) => {
     });
 };
 
+
 module.exports = {
   selectUsers,
   selectUserByUsername,

@@ -1,9 +1,13 @@
 const db = require("../db/connection.js");
-const { selectArticleById } = require("./article-model.js");
+
+const {selectArticleById} = require("./article-model.js");
+
 const { selectUserByUsername } = require("./user-model.js");
+
 
 const selectCommentsByArticleId = (article_id) => {
   return selectArticleById(article_id).then(() => {
+
     return db
       .query(
         `SELECT * FROM comments WHERE article_id=$1 ORDER BY created_at DESC;`,
@@ -78,7 +82,6 @@ const selectCommentById = (comment_id) => {
 };
 
 const setCommentById = (comment_id, inc_votes, queryKeys) => {
-
   if (!inc_votes && queryKeys.length > 0) {
     return Promise.reject({
       status: 400,
@@ -86,33 +89,27 @@ const setCommentById = (comment_id, inc_votes, queryKeys) => {
     });
   }
 
-  if(queryKeys.length===0){
-
-    return selectCommentById(comment_id).then((comment)=>{
-
-      return comment
-    })
-    
-  }else{
-
-      return db
-    .query(`UPDATE comments SET votes=votes+$1 WHERE comment_id=$2 RETURNING *;`, [
-      inc_votes,
-      comment_id,
-    ])
-    .then(({ rows: comments }) => {
-
-      if(comments.length>0){
-        return comments[0];
-      } else{
-        return Promise.reject({
-          status: 404,
-          message: "comment id doesn't exist",
-        });
-      }
-    })
-
-    }
+  if (queryKeys.length === 0) {
+    return selectCommentById(comment_id).then((comment) => {
+      return comment;
+    });
+  } else {
+    return db
+      .query(
+        `UPDATE comments SET votes=votes+$1 WHERE comment_id=$2 RETURNING *;`,
+        [inc_votes, comment_id]
+      )
+      .then(({ rows: comments }) => {
+        if (comments.length > 0) {
+          return comments[0];
+        } else {
+          return Promise.reject({
+            status: 404,
+            message: "comment id doesn't exist",
+          });
+        }
+      });
+  }
 };
 
 const deleteCommentsByArticleId = (article_id) => {
@@ -120,8 +117,6 @@ const deleteCommentsByArticleId = (article_id) => {
     .query(`DELETE FROM comments WHERE article_id=$1 RETURNING *`, [article_id])
     .then(({ rows: comments }) => {
       if (comments.length > 0) {
-
-        console.log(comments)
         return comments[0];
       } else {
         return Promise.reject({
@@ -138,5 +133,6 @@ module.exports = {
   deleteCommentById,
   setCommentById,
   selectComments,
-  selectCommentById, deleteCommentsByArticleId
+  selectCommentById,
+  deleteCommentsByArticleId,
 };

@@ -58,7 +58,6 @@ const postArticle = (request, response, next)=>{
 
 const removeArticleById = (request, response, next) => {
   const { article_id } = request.params;
-  console.log("inside controller", article_id)
 
   deleteArticleById(article_id)
     .then((article) => {

@@ -1139,12 +1139,12 @@ describe("204: delete article by article_id", () => {
   describe("404: comment_id doesn't exist", () => {
     test("404: returns message of id doesn't exist", () => {
       return request(app)
-        .delete("/api/comments/50")
+        .delete("/api/articles/200")
         .expect(404)
         .then(({ body }) => {
           expect(body).toEqual({
             status: 404,
-            message: "comment_id doesn't exist",
+            message: "article_id doesn't exist",
           });
         });
     });
@@ -1153,7 +1153,7 @@ describe("204: delete article by article_id", () => {
   describe("400: comment_id is wrong type", () => {
     test("400: returns message of Bad Request", () => {
       return request(app)
-        .delete("/api/comments/notanumber")
+        .delete("/api/articles/notanumber")
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({
@@ -1165,7 +1165,7 @@ describe("204: delete article by article_id", () => {
   });
 });
 
-describe.only("204: delete comments by article_id", () => {
+describe("204: delete comments by article_id", () => {
   test("204: returns no content on completion", () => {
     return request(app)
       .delete("/api/article/comments/1")
