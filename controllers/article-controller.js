@@ -1,7 +1,7 @@
 const {
   selectArticles,
   selectArticleById,
-  setArticleById, insertArticle
+  setArticleById, insertArticle, deleteArticleById
 } = require("../models/article-model.js");
 
 const getArticles = (request, response, next) => {
@@ -56,8 +56,22 @@ const postArticle = (request, response, next)=>{
   })
 }
 
+const removeArticleById = (request, response, next) => {
+  const { article_id } = request.params;
+  console.log("inside controller", article_id)
+
+  deleteArticleById(article_id)
+    .then((article) => {
+      response.status(204).send();
+  
+    })
+    .catch((err)=>{
+      next(err)
+    })
+}
+
 module.exports = {
   getArticles,
   getArticleById,
-  updateArticleById,postArticle
+  updateArticleById,postArticle, removeArticleById
 };

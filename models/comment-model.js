@@ -115,11 +115,28 @@ const setCommentById = (comment_id, inc_votes, queryKeys) => {
     }
 };
 
+const deleteCommentsByArticleId = (article_id) => {
+  return db
+    .query(`DELETE FROM comments WHERE article_id=$1 RETURNING *`, [article_id])
+    .then(({ rows: comments }) => {
+      if (comments.length > 0) {
+
+        console.log(comments)
+        return comments[0];
+      } else {
+        return Promise.reject({
+          status: 404,
+          message: "comment_id doesn't exist",
+        });
+      }
+    });
+};
+
 module.exports = {
   selectCommentsByArticleId,
   insertCommentByArticleId,
   deleteCommentById,
   setCommentById,
   selectComments,
-  selectCommentById,
+  selectCommentById, deleteCommentsByArticleId
 };

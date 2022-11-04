@@ -448,7 +448,6 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(200)
       .then(({ body }) => {
         const article = body.article;
-        console.log(article)
 
         expect(article).toEqual({
           article_id: 1,
@@ -1136,6 +1135,83 @@ describe("POST api/articles", () => {
           expect(body).toEqual({
             status: 400,
             message: "Missing keys",
+          });
+        });
+    });
+  });
+});
+
+describe("204: delete article by article_id", () => {
+  test("204: returns no content on completion", () => {
+    return request(app)
+      .delete("/api/articles/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  describe("404: comment_id doesn't exist", () => {
+    test("404: returns message of id doesn't exist", () => {
+      return request(app)
+        .delete("/api/comments/50")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "comment_id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: comment_id is wrong type", () => {
+    test("400: returns message of Bad Request", () => {
+      return request(app)
+        .delete("/api/comments/notanumber")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
+          });
+        });
+    });
+  });
+});
+
+
+describe("204: delete comments by article_id", () => {
+  test.only("204: returns no content on completion", () => {
+    return request(app)
+      .delete("/api/article/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  describe("404: comment_id doesn't exist", () => {
+    test("404: returns message of id doesn't exist", () => {
+      return request(app)
+        .delete("/api/comments/50")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 404,
+            message: "comment_id doesn't exist",
+          });
+        });
+    });
+  });
+
+  describe("400: comment_id is wrong type", () => {
+    test("400: returns message of Bad Request", () => {
+      return request(app)
+        .delete("/api/comments/notanumber")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body).toEqual({
+            status: 400,
+            message: "Bad Request",
           });
         });
     });

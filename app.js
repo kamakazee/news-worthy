@@ -16,7 +16,7 @@ const {articleRouter} = require("./routes/article-router.js");
 
 const {
   getCommentsByArticleId,
-  postCommentByArticleId,removeCommentById, updateCommentById, getComments, getCommentById
+  postCommentByArticleId,removeCommentById, updateCommentById, getComments, getCommentById, removeCommentsByArticleId
 } = require("./controllers/comment-controller.js");
 
 const { handlePsqlErrors, handleCustomErrors } = require("./errors/index.js");
@@ -36,6 +36,8 @@ app.use('/api/articles', articleRouter);
 app.get("/api/articles/:article_id/comment", getCommentsByArticleId);
 
 app.delete("/api/comments/:comment_id", removeCommentById);
+
+app.delete("/api/article/comments/:article_id", removeCommentsByArticleId)
 
 app.post("/api/articles/:article_id/comment", postCommentByArticleId);
 

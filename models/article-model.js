@@ -119,12 +119,27 @@ const insertArticle = (author, title, body, topic)=>{
 
   })
 
-  
-
 }
 
+const deleteArticleById = (article_id) => {
+
+
+  console.log("Inside of model")
+  return db
+    .query(`DELETE FROM articles WHERE article_id=$1 RETURNING *`, [article_id])
+    .then(({ rows: articles }) => {
+      if (articles.length > 0) {
+        return articles[0];
+      } else {
+        return Promise.reject({
+          status: 404,
+          message: "article_id doesn't exist",
+        });
+      }
+    });
+};
 module.exports = {
   selectArticles,
   selectArticleById,
-  setArticleById, insertArticle
+  setArticleById, insertArticle, deleteArticleById
 };
