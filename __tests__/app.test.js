@@ -204,7 +204,9 @@ describe("GET api/articles", () => {
 
           expect(articlesArray).toHaveLength(12);
 
-          expect(articlesArray).toBeSortedBy("created_at", { descending: false });
+          expect(articlesArray).toBeSortedBy("created_at", {
+            descending: false,
+          });
 
           articlesArray.forEach((article) => {
             expect(article).toEqual(
@@ -608,7 +610,6 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("POST api/articles/:article_id/comments", () => {
-
   test("201: returns object of newly created comment, ", () => {
     return request(app)
       .post(`/api/articles/1/comment`)
@@ -653,8 +654,6 @@ describe("POST api/articles/:article_id/comments", () => {
         });
       });
   });
-
-
 
   describe("404: article id doesn't exist", () => {
     test("404: returns message, article id doesnt exist", () => {
@@ -767,16 +766,15 @@ describe("204: delete comment by comment_id", () => {
   });
 });
 
-describe("GET /api serves up a json representation of all the available endpoints of the api",()=>{
-  test("200: responds with an object with the following keys to represent endpoints",()=>{
+describe("GET /api serves up a json representation of all the available endpoints of the api", () => {
+  test("200: responds with an object with the following keys to represent endpoints", () => {
     return request(app)
-    .get("/api")
-    .expect(200)
-    .then(({ body }) => {
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const api = body.api;
 
-      const api = body.api;
-
-      expect(Object.keys(api)).toHaveLength(14);
+        expect(Object.keys(api)).toHaveLength(14);
 
         expect(api).toEqual(
           expect.objectContaining({
@@ -794,12 +792,11 @@ describe("GET /api serves up a json representation of all the available endpoint
             "GET /api/comments": expect.any(Object),
             "GET /api/comments/:comment_id": expect.any(Object),
             "PATCH /api/comments/:comment_id": expect.any(Object),
-          }))
-     
-    });
-
-  })
-})
+          })
+        );
+      });
+  });
+});
 
 describe("GET api/comments/:comment_id", () => {
   test("200: respond with all comments for endpoint of api/comments", () => {
@@ -836,9 +833,9 @@ describe("GET api/comments/:comment_id", () => {
           comment_id: 1,
           body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
           article_id: 9,
-          author: 'butter_bridge',
+          author: "butter_bridge",
           votes: 16,
-          created_at: "2020-04-06T12:17:00.000Z"
+          created_at: "2020-04-06T12:17:00.000Z",
         });
       });
   });
@@ -903,9 +900,9 @@ describe("PATCH /api/comments/:comment_id", () => {
           comment_id: 1,
           body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
           article_id: 9,
-          author: 'butter_bridge',
+          author: "butter_bridge",
           votes: 26,
-          created_at: "2020-04-06T12:17:00.000Z"
+          created_at: "2020-04-06T12:17:00.000Z",
         });
       });
   });
@@ -922,9 +919,9 @@ describe("PATCH /api/comments/:comment_id", () => {
           comment_id: 1,
           body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
           article_id: 9,
-          author: 'butter_bridge',
+          author: "butter_bridge",
           votes: 16,
-          created_at: "2020-04-06T12:17:00.000Z"
+          created_at: "2020-04-06T12:17:00.000Z",
         });
       });
   });
@@ -990,7 +987,6 @@ describe("PATCH /api/comments/:comment_id", () => {
 });
 
 describe("POST api/articles", () => {
-
   test("201: returns object of newly created article, ", () => {
     return request(app)
       .post(`/api/articles`)
@@ -998,22 +994,20 @@ describe("POST api/articles", () => {
         author: "icellusedkars",
         title: "Some new title",
         body: "blah blah blah blah something newsy blah blah blah",
-        topic: 'paper'
+        topic: "paper",
       })
       .expect(201)
       .then(({ body }) => {
         const article = body.article;
 
-        
-
         expect(article).toEqual({
           title: "Some new title",
-              topic: 'paper',
-              author: "icellusedkars",
-              body: "blah blah blah blah something newsy blah blah blah",
-              created_at: expect.any(String),
-              votes: 0,
-              article_id: 13,
+          topic: "paper",
+          author: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+          created_at: expect.any(String),
+          votes: 0,
+          article_id: 13,
         });
       });
   });
@@ -1025,23 +1019,21 @@ describe("POST api/articles", () => {
         author: "icellusedkars",
         title: "Some new title",
         body: "blah blah blah blah something newsy blah blah blah",
-        topic: 'paper',
-        funkykey: "fsharp"
+        topic: "paper",
+        funkykey: "fsharp",
       })
       .expect(201)
       .then(({ body }) => {
         const article = body.article;
 
-        
-
         expect(article).toEqual({
           title: "Some new title",
-              topic: 'paper',
-              author: "icellusedkars",
-              body: "blah blah blah blah something newsy blah blah blah",
-              created_at: expect.any(String),
-              votes: 0,
-              article_id: 13,
+          topic: "paper",
+          author: "icellusedkars",
+          body: "blah blah blah blah something newsy blah blah blah",
+          created_at: expect.any(String),
+          votes: 0,
+          article_id: 13,
         });
       });
   });
@@ -1053,28 +1045,24 @@ describe("POST api/articles", () => {
         author: "icellusedkars",
         title: "Some new title",
         body: "",
-        topic: 'paper',
-        funkykey: "fsharp"
+        topic: "paper",
+        funkykey: "fsharp",
       })
       .expect(201)
       .then(({ body }) => {
         const article = body.article;
 
-        
-
         expect(article).toEqual({
           title: "Some new title",
-              topic: 'paper',
-              author: "icellusedkars",
-              body: "",
-              created_at: expect.any(String),
-              votes: 0,
-              article_id: 13,
+          topic: "paper",
+          author: "icellusedkars",
+          body: "",
+          created_at: expect.any(String),
+          votes: 0,
+          article_id: 13,
         });
       });
   });
-
-
 
   describe("404: author doesn't exist", () => {
     test("404: returns message, author doesnt exist", () => {
@@ -1084,8 +1072,8 @@ describe("POST api/articles", () => {
           author: "unknown",
           title: "Some new title",
           body: "blah blah blah blah something newsy blah blah blah",
-          topic: 'paper',
-          funkykey: "fsharp"
+          topic: "paper",
+          funkykey: "fsharp",
         })
         .expect(404)
         .then(({ body }) => {
@@ -1105,8 +1093,8 @@ describe("POST api/articles", () => {
           author: "icellusedkars",
           title: "Some new title",
           body: "blah blah blah blah something newsy blah blah blah",
-          topic: 'blah',
-          funkykey: "fsharp"
+          topic: "blah",
+          funkykey: "fsharp",
         })
         .expect(404)
         .then(({ body }) => {
@@ -1118,7 +1106,6 @@ describe("POST api/articles", () => {
     });
   });
 
-
   describe("404: Missing body key", () => {
     test("404: returns message, missing keys", () => {
       return request(app)
@@ -1126,12 +1113,11 @@ describe("POST api/articles", () => {
         .send({
           author: "icellusedkars",
           title: "Some new title",
-          topic: 'paper',
-          funkykey: "fsharp"
+          topic: "paper",
+          funkykey: "fsharp",
         })
         .expect(400)
         .then(({ body }) => {
-
           expect(body).toEqual({
             status: 400,
             message: "Missing keys",
@@ -1179,9 +1165,8 @@ describe("204: delete article by article_id", () => {
   });
 });
 
-
-describe("204: delete comments by article_id", () => {
-  test.only("204: returns no content on completion", () => {
+describe.only("204: delete comments by article_id", () => {
+  test("204: returns no content on completion", () => {
     return request(app)
       .delete("/api/article/comments/1")
       .expect(204)
@@ -1192,12 +1177,12 @@ describe("204: delete comments by article_id", () => {
   describe("404: comment_id doesn't exist", () => {
     test("404: returns message of id doesn't exist", () => {
       return request(app)
-        .delete("/api/comments/50")
+        .delete("/api/article/comments/200")
         .expect(404)
         .then(({ body }) => {
           expect(body).toEqual({
             status: 404,
-            message: "comment_id doesn't exist",
+            message: "article_id doesn't exist",
           });
         });
     });
@@ -1206,7 +1191,7 @@ describe("204: delete comments by article_id", () => {
   describe("400: comment_id is wrong type", () => {
     test("400: returns message of Bad Request", () => {
       return request(app)
-        .delete("/api/comments/notanumber")
+        .delete("/api/article/comments/notanumber")
         .expect(400)
         .then(({ body }) => {
           expect(body).toEqual({

@@ -126,7 +126,7 @@ const deleteCommentsByArticleId = (article_id) => {
       } else {
         return Promise.reject({
           status: 404,
-          message: "comment_id doesn't exist",
+          message: "article_id doesn't exist",
         });
       }
     });
